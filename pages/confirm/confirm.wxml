@@ -1,6 +1,14 @@
 <view class="page confirm-page">
   <scroll-view class="confirm-scroll" scroll-y="{{true}}" enhanced="{{true}}" show-scrollbar="{{false}}">
     <view wx:if="{{checkout.items.length}}">
+      <view wx:if="{{checkout.isGroup}}" class="group-ribbon">
+        <view class="group-badge">团</view>
+        <view class="group-ribbon-copy">
+          <view class="group-title">{{groupTitle}}</view>
+          <view class="group-text">{{groupText}}</view>
+        </view>
+      </view>
+
       <view class="confirm-block">
         <view class="pickup">
           <view class="pickup-icon">店</view>
@@ -32,6 +40,10 @@
               <view class="confirm-copy">
                 <view class="confirm-name line-clamp-2">{{item.name}}</view>
                 <view class="confirm-spec">{{item.spec}} ×{{item.quantity}}</view>
+                <view wx:if="{{checkout.isGroup}}" class="confirm-price-line">
+                  <text>拼团价 ¥{{item.checkoutPriceText}}</text>
+                  <text>原价 ¥{{item.priceText}}</text>
+                </view>
               </view>
               <view class="confirm-subtotal">¥{{item.subtotalText}}</view>
             </view>
@@ -53,7 +65,11 @@
       <view class="confirm-block">
         <view class="summary-line">
           <text>商品金额</text>
-          <text>¥{{checkout.totalText}}</text>
+          <text>¥{{checkout.isGroup ? checkout.originalTotalText : checkout.totalText}}</text>
+        </view>
+        <view wx:if="{{checkout.isGroup}}" class="summary-line discount">
+          <text>团购优惠</text>
+          <text>-¥{{checkout.discountText}}</text>
         </view>
         <view class="summary-line">
           <text>自提服务费</text>
@@ -79,6 +95,6 @@
       <text>合计：</text>
       <text class="submit-price">¥{{checkout.totalText}}</text>
     </view>
-    <view class="submit-btn" bindtap="submitOrder">提交订单</view>
+    <view class="submit-btn" bindtap="submitOrder">{{checkout.submitText}}</view>
   </view>
 </view>

@@ -53,7 +53,7 @@ const categories = [
     name: '干货菌菇',
     icon: '菇',
     slogan: '煲汤配菜 · 鲜香耐放',
-    banner: 'https://images.unsplash.com/photo-1605810620434-bbf2f67f602f?auto=format&fit=crop&w=900&q=80'
+    banner: 'https://images.unsplash.com/photo-1518843875459-f738682238a6?auto=format&fit=crop&w=900&q=80'
   }
 ]
 
@@ -71,6 +71,8 @@ const products = [
     limit: 6,
     sales: 126,
     group: true,
+    groupPrice: 19.9,
+    groupSize: 5,
     featured: false,
     tag: '限时拼团',
     status: 'available',
@@ -89,8 +91,10 @@ const products = [
     limit: 4,
     sales: 98,
     group: true,
+    groupPrice: 18.8,
+    groupSize: 5,
     featured: true,
-    tag: '3 人团',
+    tag: '5 人团',
     status: 'available',
     pickup: '今日 18:00 后可取'
   },
@@ -107,6 +111,8 @@ const products = [
     limit: 5,
     sales: 76,
     group: false,
+    groupPrice: null,
+    groupSize: 5,
     featured: true,
     tag: '精选',
     status: 'available',
@@ -125,6 +131,8 @@ const products = [
     limit: 4,
     sales: 63,
     group: false,
+    groupPrice: null,
+    groupSize: 5,
     featured: true,
     tag: '应季',
     status: 'available',
@@ -143,6 +151,8 @@ const products = [
     limit: 3,
     sales: 211,
     group: false,
+    groupPrice: null,
+    groupSize: 5,
     featured: true,
     tag: '今日精选',
     status: 'available',
@@ -161,6 +171,8 @@ const products = [
     limit: 5,
     sales: 147,
     group: false,
+    groupPrice: null,
+    groupSize: 5,
     featured: true,
     tag: '热卖',
     status: 'available',
@@ -179,6 +191,8 @@ const products = [
     limit: 3,
     sales: 45,
     group: true,
+    groupPrice: 32.8,
+    groupSize: 5,
     featured: false,
     tag: '肉类团',
     status: 'available',
@@ -197,6 +211,8 @@ const products = [
     limit: 4,
     sales: 82,
     group: false,
+    groupPrice: null,
+    groupSize: 5,
     featured: true,
     tag: '冷链',
     status: 'available',
@@ -215,6 +231,8 @@ const products = [
     limit: 2,
     sales: 186,
     group: true,
+    groupPrice: 29.9,
+    groupSize: 5,
     featured: false,
     tag: '已售罄',
     status: 'soldout',
@@ -233,6 +251,8 @@ const products = [
     limit: 2,
     sales: 38,
     group: false,
+    groupPrice: null,
+    groupSize: 5,
     featured: true,
     tag: '厨房必备',
     status: 'available',
@@ -251,6 +271,8 @@ const products = [
     limit: 6,
     sales: 132,
     group: false,
+    groupPrice: null,
+    groupSize: 5,
     featured: true,
     tag: '冷藏',
     status: 'available',
@@ -269,6 +291,8 @@ const products = [
     limit: 4,
     sales: 59,
     group: false,
+    groupPrice: null,
+    groupSize: 5,
     featured: false,
     tag: '五谷',
     status: 'available',
@@ -280,13 +304,15 @@ const products = [
     name: '山珍菌菇煲汤包',
     price: 33.8,
     originalPrice: 45.8,
-    image: 'https://images.unsplash.com/photo-1605810620434-bbf2f67f602f?auto=format&fit=crop&w=900&q=80',
+    image: 'https://images.unsplash.com/photo-1518843875459-f738682238a6?auto=format&fit=crop&w=900&q=80',
     spec: '260g / 袋',
     desc: '香菇、茶树菇、竹荪组合，煲汤提鲜更省心。',
     stock: 24,
     limit: 3,
     sales: 41,
     group: true,
+    groupPrice: 26.8,
+    groupSize: 5,
     featured: false,
     tag: '煲汤团',
     status: 'available',
@@ -298,7 +324,7 @@ const banners = [
   {
     id: 'orange',
     title: '周末鲜果团',
-    subtitle: '蜜橘 3 人团低至 ¥32.6',
+    subtitle: '蜜橘 5 人团低至 ¥18.8',
     image: 'https://images.unsplash.com/photo-1610832958506-aa56368176cf?auto=format&fit=crop&w=1000&q=80'
   },
   {
@@ -316,6 +342,7 @@ const banners = [
 ]
 
 const orderStatuses = [
+  { key: 'pending_group', name: '拼团中', icon: '团', action: '邀请好友' },
   { key: 'pending_ship', name: '待发货', icon: '包', action: '查看详情' },
   { key: 'pending_receive', name: '待收货', icon: '车', action: '确认收货' },
   { key: 'pending_comment', name: '待评价', icon: '评', action: '去评价' },
@@ -323,10 +350,30 @@ const orderStatuses = [
 ]
 
 const pickupInfo = {
+  id: 'happy',
   name: '幸福社区自提点',
   address: '幸福花园 2 号门便利店旁',
-  time: '明日 16:00-20:00 可取'
+  time: '明日 16:00-20:00 可取',
+  distance: '0.4km'
 }
+
+const pickupPoints = [
+  pickupInfo,
+  {
+    id: 'sunshine',
+    name: '阳光小区自提柜',
+    address: '阳光小区东门快递柜旁',
+    time: '明日 17:00-20:30 可取',
+    distance: '1.1km'
+  },
+  {
+    id: 'star',
+    name: '星河湾团长店',
+    address: '星河湾 5 栋楼下生鲜店',
+    time: '明日 16:30-21:00 可取',
+    distance: '1.8km'
+  }
+]
 
 const defaultContact = {
   name: '小刘',
@@ -334,6 +381,7 @@ const defaultContact = {
 }
 
 const defaultUser = {
+  id: 'user_self',
   loggedIn: true,
   nickName: '小刘',
   avatarText: '刘'
@@ -382,6 +430,7 @@ module.exports = {
   getProductsByCategory,
   orderStatuses,
   pickupInfo,
+  pickupPoints,
   products,
   searchProducts
 }

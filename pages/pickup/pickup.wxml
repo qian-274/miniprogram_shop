@@ -1,0 +1,42 @@
+<view class="page pickup-page" wx:if="{{product}}">
+  <view class="group-tip">
+    <view class="tip-icon">团</view>
+    <view>
+      <view class="tip-title">开团前先锁定取货点</view>
+      <view class="tip-copy">同一拼团绑定同一自提点，好友参团后统一到货。</view>
+    </view>
+  </view>
+
+  <view class="pickup-list">
+    <block wx:for="{{pickupPoints}}" wx:key="id">
+      <view
+        class="pickup-option {{selectedPickupId == item.id ? 'selected' : ''}}"
+        data-id="{{item.id}}"
+        bindtap="selectPickup"
+      >
+        <view class="pickup-mark">{{selectedPickupId == item.id ? '✓' : ''}}</view>
+        <view class="pickup-copy">
+          <view class="pickup-title">{{item.name}}</view>
+          <view class="pickup-text">{{item.address}}，{{item.time}}</view>
+        </view>
+        <view class="distance">{{item.distance}}</view>
+      </view>
+    </block>
+  </view>
+
+  <view class="product-strip">
+    <image src="{{product.image}}" mode="aspectFill" />
+    <view>
+      <view class="strip-title line-clamp-1">{{product.name}}</view>
+      <view class="strip-price">拼团价 ¥{{product.groupPriceText}} · {{product.groupSizeText}}</view>
+    </view>
+  </view>
+
+  <view class="submit-bar">
+    <view class="submit-total">
+      <text>已选：</text>
+      <text class="submit-price">{{selectedPickupId ? '自提点' : '未选择'}}</text>
+    </view>
+    <view class="submit-btn" bindtap="confirmPickup">确认自提点</view>
+  </view>
+</view>

@@ -73,8 +73,8 @@
 
 .order-shortcuts {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  padding: 28rpx 8rpx 30rpx;
+  grid-template-columns: repeat(5, 1fr);
+  padding: 26rpx 6rpx 28rpx;
 }
 
 .order-shortcut {
@@ -83,15 +83,15 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 12rpx;
+  gap: 10rpx;
   color: #3e4b43;
-  font-size: 24rpx;
+  font-size: 22rpx;
   font-weight: 800;
 }
 
 .status-icon {
-  width: 62rpx;
-  height: 62rpx;
+  width: 58rpx;
+  height: 58rpx;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -105,7 +105,7 @@
 .badge {
   position: absolute;
   top: -6rpx;
-  right: 26rpx;
+  right: 14rpx;
   min-width: 30rpx;
   height: 30rpx;
   display: flex;

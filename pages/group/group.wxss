@@ -1,0 +1,184 @@
+.group-page {
+  padding: 24rpx 28rpx 152rpx;
+}
+
+.status-card {
+  padding: 28rpx;
+  color: #fff;
+  border-radius: 16rpx;
+  background: linear-gradient(135deg, #1ecb3a, #0f9f43);
+}
+
+.status-card.completed {
+  background: linear-gradient(135deg, #35a7ff, #0f9f43);
+}
+
+.status-title {
+  font-size: 36rpx;
+  font-weight: 900;
+}
+
+.status-copy {
+  margin-top: 12rpx;
+  font-size: 25rpx;
+  line-height: 1.55;
+  opacity: 0.92;
+}
+
+.progress-dots {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 14rpx;
+  margin-top: 24rpx;
+}
+
+.progress-dot {
+  height: 70rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #0f9f43;
+  font-size: 26rpx;
+  font-weight: 900;
+  border-radius: 14rpx;
+  background: rgba(255, 255, 255, 0.94);
+}
+
+.progress-dot.empty {
+  color: rgba(255, 255, 255, 0.86);
+  background: rgba(255, 255, 255, 0.18);
+  border: 1rpx dashed rgba(255, 255, 255, 0.58);
+}
+
+.invite-card,
+.member-card,
+.pickup-card,
+.hide-tip {
+  margin-top: 20rpx;
+  padding: 24rpx;
+  border: 1rpx solid #e5ece7;
+  border-radius: 16rpx;
+  background: #fff;
+}
+
+.invite-card {
+  display: grid;
+  grid-template-columns: 1fr 172rpx;
+  gap: 18rpx;
+  align-items: center;
+}
+
+.invite-title,
+.card-head,
+.hide-title,
+.pickup-title {
+  color: #1f2b25;
+  font-size: 29rpx;
+  font-weight: 900;
+}
+
+.invite-copy,
+.hide-copy,
+.pickup-text {
+  margin-top: 8rpx;
+  color: #6d7a72;
+  font-size: 24rpx;
+  line-height: 1.5;
+}
+
+.invite-btn {
+  min-height: 72rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-size: 26rpx;
+  font-weight: 900;
+  border-radius: 12rpx;
+  background: #ef4a45;
+}
+
+.card-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12rpx;
+}
+
+.member-row {
+  min-height: 70rpx;
+  display: grid;
+  grid-template-columns: 48rpx 1fr auto;
+  gap: 14rpx;
+  align-items: center;
+  border-bottom: 1rpx solid #edf2ef;
+}
+
+.member-row:last-child {
+  border-bottom: 0;
+}
+
+.member-avatar {
+  width: 42rpx;
+  height: 42rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-size: 22rpx;
+  font-weight: 900;
+  border-radius: 50%;
+  background: #1ecb3a;
+}
+
+.member-avatar.empty {
+  color: #9aa59e;
+  background: #edf2ef;
+}
+
+.member-name {
+  color: #3e4b43;
+  font-size: 26rpx;
+  font-weight: 800;
+}
+
+.member-state {
+  color: #ef4a45;
+  font-size: 23rpx;
+  font-weight: 900;
+}
+
+.pickup-card {
+  display: grid;
+  grid-template-columns: 56rpx 1fr;
+  gap: 16rpx;
+  align-items: center;
+}
+
+.pickup-icon {
+  width: 50rpx;
+  height: 50rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #0f9f43;
+  font-size: 24rpx;
+  font-weight: 900;
+  border-radius: 12rpx;
+  background: #e9f9ed;
+}
+
+.footer-actions {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 45;
+  min-height: 112rpx;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16rpx;
+  padding: 14rpx 28rpx calc(14rpx + env(safe-area-inset-bottom));
+  background: #fff;
+  border-top: 1rpx solid #e5ece7;
+}

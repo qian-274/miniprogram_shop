@@ -111,6 +111,16 @@
   font-size: 23rpx;
 }
 
+.group-desc-line {
+  overflow: hidden;
+  margin-top: 8rpx;
+  color: #ef4a45;
+  font-size: 22rpx;
+  font-weight: 900;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 .product-footer {
   display: flex;
   align-items: center;

@@ -15,6 +15,49 @@
   background: #fff;
 }
 
+.group-ribbon {
+  display: grid;
+  grid-template-columns: 58rpx 1fr;
+  gap: 18rpx;
+  align-items: center;
+  margin-bottom: 18rpx;
+  padding: 22rpx 24rpx;
+  border: 1rpx solid #f6d7b7;
+  border-radius: 16rpx;
+  background: linear-gradient(105deg, #fff4e5 0%, #ebffef 100%);
+}
+
+.group-badge {
+  width: 56rpx;
+  height: 56rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-size: 26rpx;
+  font-weight: 900;
+  border-radius: 14rpx;
+  background: #ef4a45;
+}
+
+.group-ribbon-copy {
+  min-width: 0;
+}
+
+.group-title {
+  color: #1f2b25;
+  font-size: 29rpx;
+  font-weight: 900;
+}
+
+.group-text {
+  margin-top: 8rpx;
+  color: #785f43;
+  font-size: 23rpx;
+  line-height: 1.45;
+  font-weight: 800;
+}
+
 .pickup {
   display: grid;
   grid-template-columns: 54rpx 1fr 30rpx;
@@ -101,6 +144,22 @@
   font-size: 23rpx;
 }
 
+.confirm-price-line {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10rpx;
+  margin-top: 10rpx;
+  color: #ef4a45;
+  font-size: 22rpx;
+  font-weight: 900;
+}
+
+.confirm-price-line text:last-child {
+  color: #9aa49d;
+  font-weight: 700;
+  text-decoration: line-through;
+}
+
 .confirm-subtotal {
   color: #1f2b25;
   font-size: 26rpx;
@@ -131,6 +190,10 @@
 .summary-line.total {
   color: #1f2b25;
   font-size: 30rpx;
+}
+
+.summary-line.discount {
+  color: #ef4a45;
 }
 
 .summary-line.total text:last-child {

@@ -18,6 +18,55 @@
       <view class="detail-desc">{{product.desc}}</view>
     </view>
 
+    <view wx:if="{{product.groupEnabled}}" class="group-price-band">
+      <view>
+        <view class="group-price"><text>拼团价：</text>¥{{product.groupPriceText}}</view>
+        <view class="group-rule">{{product.groupSizeText}} · 24 小时内成团 · 满员后自动隐藏</view>
+      </view>
+      <view class="group-open-btn" bindtap="openGroup">立即开团</view>
+    </view>
+
+    <view wx:if="{{product.groupEnabled}}" class="group-panel">
+      <view class="group-head">
+        <text>{{groupPanelTitle}}</text>
+        <text>{{product.groupSize}} 人成团</text>
+      </view>
+
+      <block wx:if="{{groups.length}}">
+        <block wx:for="{{groups}}" wx:key="id">
+          <view class="group-row {{highlightedGroupId == item.id ? 'highlight' : ''}}">
+            <view class="group-avatar">{{item.leaderAvatarText}}</view>
+            <view class="group-copy" data-id="{{item.id}}" bindtap="goGroup">
+              <view class="group-name">{{item.leaderLabel}}</view>
+              <view class="group-desc">{{item.remainingText}} · {{item.pickup.name}}</view>
+            </view>
+            <button
+              wx:if="{{item.isMine}}"
+              class="group-action invite"
+              data-id="{{item.id}}"
+              open-type="share"
+            >邀请</button>
+            <view
+              wx:elif="{{item.canJoin}}"
+              class="group-action"
+              data-id="{{item.id}}"
+              bindtap="joinGroup"
+            >¥{{item.groupPriceText}} 去参团</view>
+            <view
+              wx:else
+              class="group-action muted"
+              data-id="{{item.id}}"
+              bindtap="goGroup"
+            >查看</view>
+          </view>
+        </block>
+      </block>
+
+      <view wx:else class="group-empty">
+        <text>还没有可参与拼团，立即开团邀请微信好友。</text>
+      </view>
+    </view>
+
     <view class="info-block">
       <view class="info-line">
         <text>分类</text>
@@ -29,7 +78,11 @@
       </view>
       <view class="info-line">
         <text>自提</text>
-        <text>{{product.pickup}}</text>
+        <text>{{product.groupEnabled ? '开团时选择自提点' : product.pickup}}</text>
+      </view>
+      <view class="info-line" wx:if="{{product.groupEnabled}}">
+        <text>团购</text>
+        <text>支付成功人数达到 {{product.groupSize}} 人后待发货</text>
       </view>
       <view class="info-line">
         <text>数量</text>

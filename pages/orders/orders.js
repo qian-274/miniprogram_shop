@@ -38,6 +38,14 @@ Page({
 
   handleAction(event) {
     const { id, status } = event.currentTarget.dataset
+    const order = this.data.orders.find((item) => item.id === id)
+
+    if (status === 'pending_group' && order && order.groupId) {
+      wx.navigateTo({
+        url: `/pages/group/group?groupId=${order.groupId}`
+      })
+      return
+    }
 
     if (status === 'pending_receive') {
       wx.showModal({
@@ -80,7 +88,7 @@ Page({
 
     wx.showModal({
       title: order.id,
-      content: `${order.statusText}｜${order.pickup}｜共 ${order.count} 件，合计 ¥${order.totalText}`,
+      content: `${order.statusText}｜${order.pickup}｜共 ${order.count} 件，合计 ¥${order.totalText}${order.isGroup ? `｜拼团 ${order.groupProgressText}` : ''}`,
       showCancel: false,
       confirmColor: '#1ecb3a'
     })

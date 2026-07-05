@@ -7,6 +7,8 @@ Page({
       totalText: '0.00'
     },
     contact: null,
+    groupText: '',
+    groupTitle: '',
     pickup: null,
     remark: '',
     user: null
@@ -17,10 +19,28 @@ Page({
   },
 
   loadCheckout() {
+    const checkout = store.getCheckoutSummary()
+    const firstItem = checkout.items[0] || {}
+    const groupTitle = checkout.isGroupOpen
+      ? '拼团订单 · 支付并开团'
+      : checkout.isGroupJoin
+        ? '拼团订单 · 支付并参团'
+        : ''
+    const groupLeaderName = checkout.targetGroup
+      ? (checkout.targetGroup.leaderName || checkout.targetGroup.leaderLabel || '团长')
+      : ''
+    const groupPrefix = checkout.isGroupJoin && groupLeaderName
+      ? `${groupLeaderName}的拼团 · `
+      : ''
+
     this.setData({
-      checkout: store.getCheckoutSummary(),
+      checkout,
       contact: store.mock.defaultContact,
-      pickup: store.mock.pickupInfo,
+      groupText: checkout.isGroup
+        ? `${groupPrefix}${firstItem.groupSizeText || '5 人团'} · 满员后自动进入待发货`
+        : '',
+      groupTitle,
+      pickup: checkout.pickup || store.mock.pickupInfo,
       user: store.getUser()
     })
   },
@@ -62,6 +82,35 @@ Page({
       wx.showToast({
         title: result.message,
         icon: 'none'
+      })
+      return
+    }
+
+    if (this.data.checkout.isGroup) {
+      const groupSize = result.order && result.order.group ? result.order.group.groupSize : 5
+      const isOpen = result.type === 'group_open'
+
+      wx.showModal({
+        title: result.completed ? '拼团已成' : (isOpen ? '开团成功' : '参团成功'),
+        content: result.completed
+          ? `拼团已满 ${groupSize} 人，订单已进入待发货。`
+          : `已按拼团价支付，满 ${groupSize} 人后订单自动进入待发货。`,
+        confirmText: result.completed ? '查看订单' : '查看拼团',
+        cancelText: '回到首页',
+        confirmColor: '#1ecb3a',
+        success: (res) => {
+          if (res.confirm) {
+            wx.redirectTo({
+              url: result.completed
+                ? '/pages/orders/orders?status=pending_ship'
+                : `/pages/group/group?groupId=${result.groupId}`
+            })
+          } else {
+            wx.reLaunch({
+              url: '/pages/index/index'
+            })
+          }
+        }
       })
       return
     }

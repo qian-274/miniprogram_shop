@@ -211,6 +211,16 @@
   font-size: 22rpx;
 }
 
+.group-price-line {
+  overflow: hidden;
+  margin-top: 10rpx;
+  color: #ef4a45;
+  font-size: 22rpx;
+  font-weight: 900;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 .price-row {
   display: flex;
   align-items: center;

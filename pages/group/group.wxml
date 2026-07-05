@@ -1,0 +1,61 @@
+<view class="page group-page" wx:if="{{group}}">
+  <view class="status-card {{group.status == 'completed' ? 'completed' : ''}}">
+    <view class="status-title">{{group.status == 'completed' ? '拼团已成，等待发货' : '开团成功，等待好友参团'}}</view>
+    <view class="status-copy">{{group.product.name}} · 拼团价 ¥{{group.groupPriceText}} · {{group.memberCount}}/{{group.groupSize}} 人</view>
+    <view class="progress-dots">
+      <block wx:for="{{group.progressSlots}}" wx:key="index">
+        <view class="progress-dot {{item.filled ? '' : 'empty'}}">{{item.text}}</view>
+      </block>
+    </view>
+  </view>
+
+  <view class="invite-card" wx:if="{{group.status != 'completed'}}">
+    <view>
+      <view class="invite-title">还差 {{group.remaining}} 人成团</view>
+      <view class="invite-copy">{{group.isMine ? '分享给微信好友，好友可直接按团购价参团。' : '你可以从商品详情页加入该拼团。'}}</view>
+    </view>
+    <button wx:if="{{group.isMine}}" class="invite-btn" open-type="share">邀请好友</button>
+    <view wx:else class="invite-btn" bindtap="goDetail">去参团</view>
+  </view>
+
+  <view class="member-card">
+    <view class="card-head">
+      <text>拼团成员</text>
+      <text>{{group.memberCount}}/{{group.groupSize}}</text>
+    </view>
+    <block wx:for="{{group.progressSlots}}" wx:key="index">
+      <view class="member-row">
+        <view class="member-avatar {{item.filled ? '' : 'empty'}}">{{item.text}}</view>
+        <view class="member-name">{{item.name}}</view>
+        <view class="member-state">{{item.filled ? '已支付' : '空位'}}</view>
+      </view>
+    </block>
+  </view>
+
+  <view class="pickup-card">
+    <view class="pickup-icon">店</view>
+    <view>
+      <view class="pickup-title">{{group.pickup.name}}</view>
+      <view class="pickup-text">{{group.pickup.address}}，{{group.pickup.time}}</view>
+    </view>
+  </view>
+
+  <view class="hide-tip">
+    <view class="hide-title">满 {{group.groupSize}} 人后自动隐藏</view>
+    <view class="hide-copy">成团拼单不再出现在商品详情页的可参团列表中，订单进入待发货。</view>
+  </view>
+
+  <view class="footer-actions">
+    <view class="ghost-btn" bindtap="goDetail">返回商品</view>
+    <button class="primary-btn" open-type="share" wx:if="{{group.isMine && group.status != 'completed'}}">继续邀请</button>
+    <view class="primary-btn" bindtap="goDetail" wx:else>查看商品</view>
+  </view>
+</view>
+
+<view class="page" wx:else>
+  <view class="empty-state">
+    <view class="empty-icon">团</view>
+    <text class="empty-title">拼团不存在</text>
+    <text class="empty-copy">该拼团可能已结束或被清理。</text>
+  </view>
+</view>

@@ -66,6 +66,7 @@
           <view class="product-body">
             <view class="product-name line-clamp-2">{{item.name}}</view>
             <view class="product-meta line-clamp-1">{{item.spec}}</view>
+            <view wx:if="{{item.groupEnabled}}" class="group-price-line">拼团价 ¥{{item.groupPriceText}} · {{item.groupSizeText}}</view>
             <view class="price-row">
               <text class="price"><text class="price-small">¥</text>{{item.priceText}}</text>
               <view class="mini-cart-btn" data-id="{{item.id}}" catchtap="addCart">+</view>

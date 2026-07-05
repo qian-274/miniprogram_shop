@@ -15,7 +15,10 @@
     <block wx:for="{{orders}}" wx:key="id">
       <view class="order-card">
         <view class="order-head">
-          <text>{{item.id}}</text>
+          <view class="order-id-line">
+            <text>{{item.id}}</text>
+            <text wx:if="{{item.isGroup}}" class="group-order-tag">{{item.groupRole == 'leader' ? '我开的团' : '我参的团'}}</text>
+          </view>
           <text class="status-text">{{item.statusText}}</text>
         </view>
 
@@ -28,6 +31,7 @@
           <view class="goods-summary">
             <view class="goods-title line-clamp-1">{{item.items[0].name}}</view>
             <view class="goods-meta">共 {{item.count}} 件 · {{item.pickup}}</view>
+            <view wx:if="{{item.isGroup}}" class="group-progress-line">拼团 {{item.groupProgressText}} · {{item.groupRemainingText}}</view>
           </view>
         </view>
 

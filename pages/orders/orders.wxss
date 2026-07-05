@@ -53,6 +53,32 @@
   border-bottom: 1rpx solid #edf2ef;
 }
 
+.order-id-line {
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 10rpx;
+}
+
+.order-id-line text:first-child {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.group-order-tag {
+  flex: none;
+  height: 34rpx;
+  display: flex;
+  align-items: center;
+  padding: 0 10rpx;
+  color: #ef4a45;
+  font-size: 20rpx;
+  font-weight: 900;
+  border-radius: 8rpx;
+  background: #fff2ed;
+}
+
 .status-text {
   color: #0f9f43;
 }
@@ -90,6 +116,16 @@
   margin-top: 10rpx;
   color: #6d7a72;
   font-size: 23rpx;
+}
+
+.group-progress-line {
+  overflow: hidden;
+  margin-top: 10rpx;
+  color: #ef4a45;
+  font-size: 22rpx;
+  font-weight: 800;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .order-foot {
