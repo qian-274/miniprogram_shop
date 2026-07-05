@@ -1,4 +1,5 @@
 // app.js
+//测试git
 App({
   onLaunch() {
 
