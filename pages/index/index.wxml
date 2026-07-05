@@ -1,27 +1,101 @@
-<!--index.wxml-->
-<scroll-view class="scrollarea" scroll-y type="list">
-  <view class="container">
-    <view class="userinfo">
-      <block wx:if="{{canIUseNicknameComp && !hasUserInfo}}">
-        <button class="avatar-wrapper" open-type="chooseAvatar" bind:chooseavatar="onChooseAvatar">
-          <image class="avatar" src="{{userInfo.avatarUrl}}"></image>
-        </button>
-        <view class="nickname-wrapper">
-          <text class="nickname-label">昵称</text>
-          <input type="nickname" class="nickname-input" placeholder="请输入昵称" bind:change="onInputChange" />
-        </view>
-      </block>
-      <block wx:elif="{{!hasUserInfo}}">
-        <button wx:if="{{canIUseGetUserProfile}}" bindtap="getUserProfile"> 获取头像昵称 </button>
-        <view wx:else> 请使用2.10.4及以上版本基础库 </view>
-      </block>
-      <block wx:else>
-        <image bindtap="bindViewTap" class="userinfo-avatar" src="{{userInfo.avatarUrl}}" mode="cover"></image>
-        <text class="userinfo-nickname">{{userInfo.nickName}}</text>
-      </block>
+<view class="page with-tab home-page">
+  <view class="home-hero">
+    <view class="hero-title-row">
+      <view>
+        <view class="eyebrow">社区团购 · 生鲜自提</view>
+        <view class="home-title">农产品拼团商城</view>
+      </view>
+      <view class="pickup-chip">自提</view>
     </view>
-    <view class="usermotto">
-      <text class="user-motto">{{motto}}</text>
+    <view class="pickup-text">{{pickupText}}</view>
+
+    <view class="search-box">
+      <text class="search-icon">⌕</text>
+      <input
+        class="search-input"
+        value="{{keyword}}"
+        placeholder="请输入商品关键词"
+        confirm-type="search"
+        bindinput="onKeywordInput"
+        bindconfirm="onSearchConfirm"
+      />
+      <view class="search-button" bindtap="onSearchConfirm">搜索</view>
     </view>
   </view>
-</scroll-view>
+
+  <view class="page-pad home-content">
+    <swiper
+      class="banner"
+      autoplay="{{true}}"
+      circular="{{true}}"
+      indicator-dots="{{true}}"
+      indicator-color="rgba(255,255,255,0.74)"
+      indicator-active-color="#ef4a45"
+    >
+      <block wx:for="{{banners}}" wx:key="id">
+        <swiper-item data-id="{{item.id}}" bindtap="goDetail">
+          <image class="banner-image" src="{{item.image}}" mode="aspectFill" />
+          <view class="banner-copy">
+            <text class="banner-title">{{item.title}}</text>
+            <text class="banner-subtitle">{{item.subtitle}}</text>
+          </view>
+        </swiper-item>
+      </block>
+    </swiper>
+
+    <view class="category-grid">
+      <block wx:for="{{categories}}" wx:key="id">
+        <view class="cat-item tap-card" data-id="{{item.id}}" bindtap="goCategory">
+          <view class="cat-icon">{{item.icon}}</view>
+          <text class="cat-name">{{item.name}}</text>
+        </view>
+      </block>
+    </view>
+
+    <view class="section-head">
+      <text class="section-title">拼团抢购</text>
+      <text class="section-more">限时好价</text>
+    </view>
+    <view class="product-grid">
+      <block wx:for="{{groupProducts}}" wx:key="id">
+        <view class="product-card tap-card" data-id="{{item.id}}" bindtap="goDetail">
+          <view class="product-image-wrap">
+            <image src="{{item.image}}" mode="aspectFill" />
+            <text class="pill product-tag">{{item.tag}}</text>
+          </view>
+          <view class="product-body">
+            <view class="product-name line-clamp-2">{{item.name}}</view>
+            <view class="product-meta line-clamp-1">{{item.spec}}</view>
+            <view class="price-row">
+              <text class="price"><text class="price-small">¥</text>{{item.priceText}}</text>
+              <view class="mini-cart-btn" data-id="{{item.id}}" catchtap="addCart">+</view>
+            </view>
+          </view>
+        </view>
+      </block>
+    </view>
+
+    <view class="section-head">
+      <text class="section-title">今日精选</text>
+      <text class="section-more">社区优选</text>
+    </view>
+    <view class="wide-list">
+      <block wx:for="{{featuredProducts}}" wx:key="id">
+        <view class="wide-item tap-card" data-id="{{item.id}}" bindtap="goDetail">
+          <image class="wide-image" src="{{item.image}}" mode="aspectFill" />
+          <view class="wide-copy">
+            <view class="wide-title line-clamp-1">{{item.name}}</view>
+            <view class="wide-desc line-clamp-1">{{item.spec}} · 已售 {{item.sales}}</view>
+            <view class="wide-price-row">
+              <text class="price"><text class="price-small">¥</text>{{item.priceText}}</text>
+              <text class="wide-reason">{{item.tag}}</text>
+            </view>
+          </view>
+          <view class="mini-cart-btn" data-id="{{item.id}}" catchtap="addCart">+</view>
+        </view>
+      </block>
+    </view>
+  </view>
+
+  <custom-tab-bar active="home" />
+</view>

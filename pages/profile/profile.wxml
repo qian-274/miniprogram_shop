@@ -1,0 +1,54 @@
+<view class="page with-tab profile-page">
+  <view class="profile-head">
+    <view class="avatar">{{user.avatarText}}</view>
+    <view class="profile-name">{{user.loggedIn ? user.nickName : '未登录用户'}}</view>
+    <view class="profile-desc">{{user.loggedIn ? '幸福社区 · 普通用户' : '登录后可同步购物车、收藏和订单'}}</view>
+    <view wx:if="{{!user.loggedIn}}" class="ghost-btn login-btn" bindtap="login">立即登录</view>
+  </view>
+
+  <view class="order-panel">
+    <view class="panel-head">
+      <text>我的订单</text>
+      <text class="panel-link" data-status="" bindtap="goOrders">全部订单</text>
+    </view>
+    <view class="order-shortcuts">
+      <block wx:for="{{orderStatuses}}" wx:key="key">
+        <view class="order-shortcut tap-card" data-status="{{item.key}}" bindtap="goOrders">
+          <view class="status-icon">{{item.icon}}</view>
+          <text>{{item.name}}</text>
+          <view wx:if="{{item.count}}" class="badge">{{item.count}}</view>
+        </view>
+      </block>
+    </view>
+  </view>
+
+  <view class="service-list">
+    <view class="service-row" bindtap="goFavorites">
+      <view class="service-icon">♡</view>
+      <text>我的收藏</text>
+      <text class="chevron">›</text>
+    </view>
+    <view class="service-row" bindtap="goService">
+      <view class="service-icon">☎</view>
+      <text>在线客服</text>
+      <text class="chevron">›</text>
+    </view>
+    <view class="service-row" bindtap="goFeedback">
+      <view class="service-icon">✎</view>
+      <text>意见反馈</text>
+      <text class="chevron">›</text>
+    </view>
+    <view class="service-row" bindtap="logout">
+      <view class="service-icon danger">↗</view>
+      <text>退出登录</text>
+      <text class="chevron">›</text>
+    </view>
+  </view>
+
+  <view class="recent-box">
+    <view class="recent-title">最近订单</view>
+    <view class="recent-copy">待发货、待收货、待评价订单会在这里按状态入口展示，方便演示完整购买闭环。</view>
+  </view>
+
+  <custom-tab-bar active="profile" />
+</view>

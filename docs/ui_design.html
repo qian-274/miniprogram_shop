@@ -1141,6 +1141,354 @@
       border-radius: 6px;
     }
 
+    .detail-hero.group-detail {
+      height: 178px;
+    }
+
+    .detail-title-row {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 12px;
+      align-items: start;
+    }
+
+    .stock-text {
+      color: #a4afa8;
+      font-size: 13px;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .share-tool {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      color: var(--ink);
+      font-size: 13px;
+      font-weight: 800;
+    }
+
+    .share-tool i {
+      width: 17px;
+      height: 17px;
+      color: var(--leaf-dark);
+    }
+
+    .group-price-band {
+      display: grid;
+      grid-template-columns: 1fr 112px;
+      gap: 10px;
+      align-items: center;
+      margin-bottom: 10px;
+      padding: 13px 14px;
+      background: #d9ffd8;
+      border: 1px solid rgba(30, 203, 58, 0.24);
+      border-radius: 8px;
+    }
+
+    .group-price-copy {
+      display: flex;
+      align-items: baseline;
+      gap: 6px;
+      min-width: 0;
+      color: #9d382f;
+      font-size: 18px;
+      font-weight: 900;
+    }
+
+    .group-price-copy small {
+      color: #466250;
+      font-size: 13px;
+      font-weight: 800;
+    }
+
+    .group-open-btn,
+    .group-join-btn,
+    .group-invite-btn {
+      display: grid;
+      place-items: center;
+      height: 38px;
+      color: #fff;
+      font-size: 13px;
+      font-weight: 900;
+      border-radius: 19px;
+      box-shadow: 0 8px 18px rgba(239, 74, 69, 0.22);
+    }
+
+    .group-open-btn {
+      background: linear-gradient(135deg, #ffbf4c, #ef4a45);
+    }
+
+    .group-join-btn {
+      min-width: 92px;
+      padding: 0 10px;
+      background: #ef2f2f;
+      border-radius: 6px;
+    }
+
+    .group-invite-btn {
+      min-width: 66px;
+      padding: 0 10px;
+      background: #ef2f2f;
+      border-radius: 6px;
+    }
+
+    .group-panel {
+      margin-bottom: 10px;
+      padding: 12px;
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+    }
+
+    .group-panel-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 10px;
+      color: var(--ink);
+      font-size: 15px;
+      font-weight: 900;
+    }
+
+    .group-panel-head span {
+      color: var(--leaf-dark);
+      font-size: 12px;
+      font-weight: 800;
+    }
+
+    .group-row {
+      display: grid;
+      grid-template-columns: 40px 1fr auto;
+      gap: 9px;
+      align-items: center;
+      min-height: 54px;
+      border-bottom: 1px solid #edf2ef;
+    }
+
+    .group-row:last-child {
+      border-bottom: 0;
+    }
+
+    .group-avatar {
+      width: 34px;
+      height: 34px;
+      overflow: hidden;
+      border-radius: 50%;
+      background: #edf2ef;
+    }
+
+    .group-person strong {
+      display: block;
+      font-size: 13px;
+      margin-bottom: 3px;
+    }
+
+    .group-person span {
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .group-person b {
+      color: var(--price);
+    }
+
+    .pickup-list {
+      display: grid;
+      gap: 10px;
+    }
+
+    .pickup-option {
+      display: grid;
+      grid-template-columns: 32px 1fr auto;
+      gap: 10px;
+      align-items: center;
+      padding: 12px;
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+    }
+
+    .pickup-option.selected {
+      border-color: rgba(30, 203, 58, 0.55);
+      background: var(--leaf-soft);
+    }
+
+    .pickup-mark {
+      width: 24px;
+      height: 24px;
+      display: grid;
+      place-items: center;
+      color: #fff;
+      background: var(--leaf);
+      border-radius: 50%;
+    }
+
+    .pickup-option h4 {
+      margin: 0 0 5px;
+      font-size: 14px;
+    }
+
+    .pickup-option p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.5;
+    }
+
+    .distance {
+      color: var(--leaf-dark);
+      font-size: 12px;
+      font-weight: 800;
+      white-space: nowrap;
+    }
+
+    .group-order-ribbon {
+      display: grid;
+      grid-template-columns: 36px 1fr;
+      gap: 10px;
+      align-items: center;
+      margin-bottom: 10px;
+      padding: 12px;
+      color: #8e372c;
+      background: #fff5d9;
+      border: 1px solid rgba(255, 159, 28, 0.34);
+      border-radius: 8px;
+    }
+
+    .group-order-ribbon i {
+      width: 26px;
+      height: 26px;
+      color: var(--orange);
+    }
+
+    .group-order-ribbon strong {
+      display: block;
+      font-size: 14px;
+      margin-bottom: 3px;
+    }
+
+    .group-order-ribbon span {
+      font-size: 12px;
+      color: #8b6d39;
+    }
+
+    .price-compare {
+      display: grid;
+      gap: 8px;
+      margin-top: 8px;
+    }
+
+    .price-compare .summary-line {
+      padding: 0;
+      border-bottom: 0;
+    }
+
+    .status-card {
+      margin-bottom: 10px;
+      padding: 14px;
+      color: #fff;
+      background: linear-gradient(135deg, #1ecb3a, #0f9f43);
+      border-radius: 8px;
+    }
+
+    .status-card h3 {
+      margin: 0;
+      font-size: 19px;
+    }
+
+    .status-card p {
+      margin: 8px 0 0;
+      font-size: 13px;
+      line-height: 1.55;
+      opacity: 0.9;
+    }
+
+    .progress-dots {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 8px;
+      margin-top: 14px;
+    }
+
+    .progress-dot {
+      height: 44px;
+      display: grid;
+      place-items: center;
+      color: var(--leaf-dark);
+      font-size: 13px;
+      font-weight: 900;
+      background: rgba(255, 255, 255, 0.92);
+      border-radius: 8px;
+    }
+
+    .progress-dot.empty {
+      color: rgba(255, 255, 255, 0.8);
+      background: rgba(255, 255, 255, 0.18);
+      border: 1px dashed rgba(255, 255, 255, 0.56);
+    }
+
+    .invite-share {
+      display: grid;
+      grid-template-columns: 1fr 106px;
+      gap: 10px;
+      align-items: center;
+      padding: 12px;
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+    }
+
+    .invite-share strong {
+      display: block;
+      font-size: 14px;
+      margin-bottom: 4px;
+    }
+
+    .invite-share span {
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.45;
+    }
+
+    .invite-main-btn {
+      height: 42px;
+      display: grid;
+      place-items: center;
+      color: #fff;
+      font-size: 13px;
+      font-weight: 900;
+      background: #ef4a45;
+      border-radius: 6px;
+    }
+
+    .member-list {
+      display: grid;
+      gap: 8px;
+    }
+
+    .member-row {
+      display: grid;
+      grid-template-columns: 34px 1fr auto;
+      gap: 9px;
+      align-items: center;
+      min-height: 44px;
+      color: #3e4b43;
+      font-size: 13px;
+    }
+
+    .member-row i {
+      width: 30px;
+      height: 30px;
+      color: var(--leaf-dark);
+    }
+
+    .member-row b {
+      color: var(--price);
+      font-size: 12px;
+    }
+
     .empty-state {
       display: grid;
       justify-items: center;
@@ -1199,9 +1547,9 @@
   <main class="design-board">
     <header class="board-hero">
       <div>
-        <p class="eyebrow">UI DESIGN PROTOTYPE / 普通用户端</p>
+        <p class="eyebrow">UI DESIGN PROTOTYPE / 普通用户端 + 团购流程</p>
         <h1>社区生鲜团购管理小程序</h1>
-        <p class="board-copy">依据 PRD 生成的前端页面原型图，覆盖首页、分类、购物车、我的、商品详情和订单确认。该页面用于毕设展示与界面走查，不包含真实业务逻辑。</p>
+        <p class="board-copy">依据 PRD 生成的前端页面原型图，覆盖首页、分类、购物车、我的、商品详情、订单确认，以及新增的开团、参团、自提点选择、邀请好友与拼团状态。该页面用于毕设展示与界面走查，不包含真实业务逻辑。</p>
       </div>
       <div class="legend">
         <div class="legend-item">
@@ -1217,8 +1565,8 @@
           <span>商品图片、价格、分类和订单状态优先展示。</span>
         </div>
         <div class="legend-item">
-          <strong>范围</strong>
-          <span>仅展示普通用户端静态页面和原型状态。</span>
+          <strong>团购</strong>
+          <span>突出普通价、团购价、立即开团、邀请和 5 人成团状态。</span>
         </div>
       </div>
     </header>
@@ -1522,7 +1870,7 @@
       <article class="screen-panel">
         <div class="screen-title">
           <h2>商品详情</h2>
-          <span>商品信息 / 收藏 / 加购 / 立即购买</span>
+          <span>普通价 / 拼团价 / 开团 / 参团</span>
         </div>
         <div class="phone-shell">
           <div class="phone-screen">
@@ -1536,27 +1884,47 @@
               </div>
             </header>
             <div class="app-scroll no-tab">
-              <div class="detail-hero">
-                <img src="https://images.unsplash.com/photo-1596363505729-4190a9506133?auto=format&fit=crop&w=900&q=80" alt="葡萄商品详情" />
+              <div class="detail-hero group-detail">
+                <img src="../assets/images/orange.png" alt="蜜橘商品详情" />
               </div>
               <section class="detail-card">
-                <span class="tag">拼团抢购</span>
-                <h3>自家果园葡萄，甜滋滋</h3>
-                <div class="detail-price">
-                  <span class="price"><small>¥</small>26.8</span>
-                  <div class="favorite"><i data-lucide="heart"></i><span>收藏</span></div>
+                <div class="detail-title-row">
+                  <span class="tag">拼团抢购</span>
+                  <span class="stock-text">库存 19995</span>
                 </div>
-                <p>当日采摘、社区自提，果粒紧实，适合家庭日常采购和下午茶水果搭配。</p>
+                <h3>清甜多汁蜜橘</h3>
+                <div class="detail-price">
+                  <span class="price"><small>¥</small>32.6</span>
+                  <div class="share-tool"><i data-lucide="share-2"></i><span>分享</span></div>
+                </div>
+                <p>产地直采、皮薄多汁，适合家庭日常采购和办公室分享。</p>
+              </section>
+              <section class="group-price-band">
+                <div class="group-price-copy"><small>拼团价：</small>¥18.8</div>
+                <div class="group-open-btn">立即开团</div>
+              </section>
+              <section class="group-panel">
+                <div class="group-panel-head">2 人正在开团，可直接参与 <span>5 人成团</span></div>
+                <div class="group-row">
+                  <div class="group-avatar"><img src="../assets/images/milk.png" alt="华神头像" /></div>
+                  <div class="group-person"><strong>华神</strong><span>还差 <b>3 人</b> 拼成</span></div>
+                  <div class="group-join-btn">¥18.8 去参团</div>
+                </div>
+                <div class="group-row">
+                  <div class="group-avatar"><img src="../assets/images/orange.png" alt="keke头像" /></div>
+                  <div class="group-person"><strong>keke可口</strong><span>你开的团，还差 <b>4 人</b></span></div>
+                  <div class="group-invite-btn">邀请</div>
+                </div>
               </section>
               <section class="info-block">
                 <div class="info-line"><strong>规格</strong><span>约 2 斤 / 盒</span></div>
-                <div class="info-line"><strong>库存</strong><span>剩余 36 份</span></div>
-                <div class="info-line"><strong>自提</strong><span>明日 16:00 后可取</span></div>
+                <div class="info-line"><strong>自提</strong><span>选择后锁定本团自提点</span></div>
+                <div class="info-line"><strong>有效期</strong><span>24 小时内满 5 人成团</span></div>
                 <div class="info-line"><strong>数量</strong><span class="quantity"><b>−</b><span>1</span><b>+</b></span></div>
               </section>
               <section class="info-block">
-                <div class="section-head" style="margin-top:0"><h3>商品详情</h3><span>产地直采</span></div>
-                <p style="margin:0;color:#617068;font-size:13px;line-height:1.7">精选成熟果串，冷链短途配送至社区自提点。建议收到后冷藏保存，2 日内食用口感更佳。</p>
+                <div class="section-head" style="margin-top:0"><h3>商品推荐</h3><span>同类热卖</span></div>
+                <p style="margin:0;color:#617068;font-size:13px;line-height:1.7">满员拼团会自动隐藏，未满员拼团可继续邀请或参团；支付成功人数达到 5 人后进入待发货。</p>
               </section>
             </div>
             <footer class="detail-footer">
@@ -1634,6 +2002,225 @@
             <footer class="submit-bar">
               <div class="submit-total">合计：<b>¥86.20</b></div>
               <div class="submit-btn">提交订单</div>
+            </footer>
+          </div>
+        </div>
+      </article>
+
+      <article class="screen-panel">
+        <div class="screen-title">
+          <h2>选择自提点</h2>
+          <span>开团前必选 / 默认自提点 / 可切换</span>
+        </div>
+        <div class="phone-shell">
+          <div class="phone-screen">
+            <div class="notch"></div>
+            <header class="wx-header">
+              <div class="status-bar"><span>22:57</span><span>100%</span></div>
+              <div class="title-bar">
+                <button class="back-btn" type="button" aria-label="返回"><i data-lucide="chevron-left"></i></button>
+                <div class="title">选择自提点</div>
+                <span class="header-spacer" aria-hidden="true"></span>
+              </div>
+            </header>
+            <div class="app-scroll no-tab">
+              <section class="group-order-ribbon">
+                <i data-lucide="users-round"></i>
+                <div>
+                  <strong>开团前先锁定取货点</strong>
+                  <span>同一拼团绑定同一自提点，方便社区统一到货。</span>
+                </div>
+              </section>
+              <div class="pickup-list">
+                <div class="pickup-option selected">
+                  <div class="pickup-mark"><i data-lucide="check"></i></div>
+                  <div>
+                    <h4>幸福社区自提点</h4>
+                    <p>幸福花园 2 号门便利店旁，明日 16:00-20:00 可取</p>
+                  </div>
+                  <span class="distance">0.4km</span>
+                </div>
+                <div class="pickup-option">
+                  <div class="pickup-mark" style="background:#bdc7c0"></div>
+                  <div>
+                    <h4>阳光小区自提柜</h4>
+                    <p>阳光小区东门快递柜旁，明日 17:00-20:30 可取</p>
+                  </div>
+                  <span class="distance">1.1km</span>
+                </div>
+                <div class="pickup-option">
+                  <div class="pickup-mark" style="background:#bdc7c0"></div>
+                  <div>
+                    <h4>星河湾团长店</h4>
+                    <p>星河湾 5 栋楼下生鲜店，明日 16:30-21:00 可取</p>
+                  </div>
+                  <span class="distance">1.8km</span>
+                </div>
+              </div>
+              <div class="empty-state">
+                <i data-lucide="map-pinned"></i>
+                <strong>自提点会同步到拼团订单</strong>
+                <span>好友参团时将按开团用户选定的自提点履约。</span>
+              </div>
+            </div>
+            <footer class="submit-bar">
+              <div class="submit-total">已选：<b style="font-size:16px;color:var(--leaf)">幸福社区</b></div>
+              <div class="submit-btn">确认自提点</div>
+            </footer>
+          </div>
+        </div>
+      </article>
+
+      <article class="screen-panel">
+        <div class="screen-title">
+          <h2>拼团订单确认</h2>
+          <span>团购价 / 自提点 / 支付并开团</span>
+        </div>
+        <div class="phone-shell">
+          <div class="phone-screen">
+            <div class="notch"></div>
+            <header class="wx-header">
+              <div class="status-bar"><span>22:58</span><span>100%</span></div>
+              <div class="title-bar">
+                <button class="back-btn" type="button" aria-label="返回"><i data-lucide="chevron-left"></i></button>
+                <div class="title">确认拼团订单</div>
+                <span class="header-spacer" aria-hidden="true"></span>
+              </div>
+            </header>
+            <div class="app-scroll no-tab">
+              <section class="group-order-ribbon">
+                <i data-lucide="badge-percent"></i>
+                <div>
+                  <strong>拼团订单 · 5 人成团</strong>
+                  <span>支付成功后创建拼团，还差 4 人可邀请好友。</span>
+                </div>
+              </section>
+              <section class="confirm-block">
+                <div class="pickup">
+                  <i data-lucide="store"></i>
+                  <div>
+                    <strong>幸福社区自提点</strong>
+                    <span>幸福花园 2 号门便利店旁，明日 16:00-20:00 可取</span>
+                  </div>
+                  <i data-lucide="chevron-right"></i>
+                </div>
+              </section>
+              <section class="confirm-block">
+                <h3>商品清单</h3>
+                <div class="confirm-goods">
+                  <div class="confirm-item">
+                    <div class="thumb"><img src="../assets/images/orange.png" alt="蜜橘" /></div>
+                    <div><h4>清甜多汁蜜橘</h4><span>约 2 斤 ×1 / 拼团价</span></div>
+                    <strong>¥18.8</strong>
+                  </div>
+                </div>
+                <div class="price-compare">
+                  <div class="summary-line"><span>普通价</span><strong>¥32.60</strong></div>
+                  <div class="summary-line"><span>拼团优惠</span><strong>-¥13.80</strong></div>
+                </div>
+              </section>
+              <section class="confirm-block">
+                <div class="pickup">
+                  <i data-lucide="phone"></i>
+                  <div>
+                    <strong>小刘 138****8899</strong>
+                    <span>用于到货提醒和自提核验</span>
+                  </div>
+                  <i data-lucide="chevron-right"></i>
+                </div>
+              </section>
+              <section class="confirm-block">
+                <h3>订单备注</h3>
+                <textarea class="remark" readonly>如缺货请电话联系，可接受同价替换。</textarea>
+              </section>
+              <section class="confirm-block">
+                <div class="summary-line"><span>商品金额</span><strong>¥18.80</strong></div>
+                <div class="summary-line"><span>自提服务费</span><strong>¥0.00</strong></div>
+                <div class="summary-line"><span>应付合计</span><b>¥18.80</b></div>
+              </section>
+            </div>
+            <footer class="submit-bar">
+              <div class="submit-total">合计：<b>¥18.80</b></div>
+              <div class="submit-btn">支付并开团</div>
+            </footer>
+          </div>
+        </div>
+      </article>
+
+      <article class="screen-panel">
+        <div class="screen-title">
+          <h2>我的拼团</h2>
+          <span>拼团中 / 进度 / 邀请微信好友</span>
+        </div>
+        <div class="phone-shell">
+          <div class="phone-screen">
+            <div class="notch"></div>
+            <header class="wx-header">
+              <div class="status-bar"><span>22:59</span><span>100%</span></div>
+              <div class="title-bar">
+                <button class="back-btn" type="button" aria-label="返回"><i data-lucide="chevron-left"></i></button>
+                <div class="title">我的拼团</div>
+                <span class="header-spacer" aria-hidden="true"></span>
+              </div>
+            </header>
+            <div class="app-scroll no-tab">
+              <section class="status-card">
+                <h3>开团成功，等待好友参团</h3>
+                <p>清甜多汁蜜橘 · 拼团价 ¥18.8 · 24 小时内满 5 人成团</p>
+                <div class="progress-dots">
+                  <div class="progress-dot">我</div>
+                  <div class="progress-dot empty">+1</div>
+                  <div class="progress-dot empty">+1</div>
+                  <div class="progress-dot empty">+1</div>
+                  <div class="progress-dot empty">+1</div>
+                </div>
+              </section>
+              <section class="invite-share">
+                <div>
+                  <strong>还差 4 人成团</strong>
+                  <span>分享给微信好友，好友进入后可直接按 ¥18.8 参团。</span>
+                </div>
+                <div class="invite-main-btn">邀请好友</div>
+              </section>
+              <section class="info-block" style="margin-top:10px">
+                <div class="section-head" style="margin-top:0"><h3>拼团成员</h3><span>1/5</span></div>
+                <div class="member-list">
+                  <div class="member-row">
+                    <i data-lucide="crown"></i>
+                    <span>小刘（团长）</span>
+                    <b>已支付</b>
+                  </div>
+                  <div class="member-row">
+                    <i data-lucide="user-plus"></i>
+                    <span>待邀请好友</span>
+                    <b>空位</b>
+                  </div>
+                  <div class="member-row">
+                    <i data-lucide="user-plus"></i>
+                    <span>待邀请好友</span>
+                    <b>空位</b>
+                  </div>
+                </div>
+              </section>
+              <section class="confirm-block">
+                <div class="pickup">
+                  <i data-lucide="store"></i>
+                  <div>
+                    <strong>幸福社区自提点</strong>
+                    <span>成团后进入待发货，明日 16:00-20:00 可取</span>
+                  </div>
+                  <i data-lucide="chevron-right"></i>
+                </div>
+              </section>
+              <div class="empty-state">
+                <i data-lucide="eye-off"></i>
+                <strong>满 5 人后自动隐藏</strong>
+                <span>成团拼单不再出现在商品详情页的可参团列表中。</span>
+              </div>
+            </div>
+            <footer class="submit-bar">
+              <div class="submit-total">状态：<b style="font-size:16px;color:var(--leaf)">拼团中</b></div>
+              <div class="submit-btn">继续邀请</div>
             </footer>
           </div>
         </div>

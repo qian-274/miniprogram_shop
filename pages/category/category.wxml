@@ -1,0 +1,50 @@
+<view class="page with-tab category-page">
+  <view class="category-layout">
+    <scroll-view class="category-menu" scroll-y="{{true}}" enhanced="{{true}}" show-scrollbar="{{false}}">
+      <block wx:for="{{categories}}" wx:key="id">
+        <view
+          class="menu-row {{activeCategoryId == item.id ? 'active' : ''}}"
+          data-id="{{item.id}}"
+          bindtap="selectCategory"
+        >
+          <text>{{item.name}}</text>
+        </view>
+      </block>
+    </scroll-view>
+
+    <scroll-view class="category-products" scroll-y="{{true}}" enhanced="{{true}}" show-scrollbar="{{false}}">
+      <view class="category-banner" wx:if="{{activeCategory}}">
+        <image src="{{activeCategory.banner}}" mode="aspectFill" />
+        <view class="category-banner-copy">
+          <text class="banner-name">{{activeCategory.name}}</text>
+          <text class="banner-slogan">{{activeCategory.slogan}}</text>
+        </view>
+      </view>
+
+      <view wx:if="{{products.length}}" class="product-list">
+        <block wx:for="{{products}}" wx:key="id">
+          <view class="category-product tap-card" data-id="{{item.id}}" bindtap="goDetail">
+            <image class="product-thumb" src="{{item.image}}" mode="aspectFill" />
+            <view class="product-copy">
+              <view class="product-name line-clamp-2">{{item.name}}</view>
+              <view class="product-desc line-clamp-1">{{item.spec}} · {{item.statusText}}</view>
+              <view class="product-footer">
+                <text class="price"><text class="price-small">¥</text>{{item.priceText}}</text>
+                <view wx:if="{{item.available}}" class="mini-cart-btn" data-id="{{item.id}}" catchtap="addCart">+</view>
+                <view wx:else class="soldout-btn">售罄</view>
+              </view>
+            </view>
+          </view>
+        </block>
+      </view>
+
+      <view wx:else class="empty-state">
+        <view class="empty-icon">空</view>
+        <text class="empty-title">暂无相关商品</text>
+        <text class="empty-copy">该分类商品正在补货，可以先看看其他分类。</text>
+      </view>
+    </scroll-view>
+  </view>
+
+  <custom-tab-bar active="category" />
+</view>

@@ -1,12 +1,24 @@
 {
   "pages": [
     "pages/index/index",
+    "pages/category/category",
+    "pages/cart/cart",
+    "pages/profile/profile",
+    "pages/detail/detail",
+    "pages/confirm/confirm",
+    "pages/orders/orders",
+    "pages/favorites/favorites",
+    "pages/feedback/feedback",
+    "pages/service/service",
+    "pages/search/search",
     "pages/logs/logs"
   ],
   "window": {
-    "navigationBarTextStyle": "black",
-    "navigationBarTitleText": "Weixin",
-    "navigationBarBackgroundColor": "#ffffff"
+    "navigationBarTextStyle": "white",
+    "navigationBarTitleText": "农产品拼团商城",
+    "navigationBarBackgroundColor": "#1ecb3a",
+    "backgroundColor": "#f6f8f4",
+    "backgroundTextStyle": "dark"
   },
   "style": "v2",
   "componentFramework": "glass-easel",

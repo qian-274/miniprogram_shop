@@ -1,0 +1,84 @@
+<view class="page confirm-page">
+  <scroll-view class="confirm-scroll" scroll-y="{{true}}" enhanced="{{true}}" show-scrollbar="{{false}}">
+    <view wx:if="{{checkout.items.length}}">
+      <view class="confirm-block">
+        <view class="pickup">
+          <view class="pickup-icon">店</view>
+          <view class="pickup-copy">
+            <view class="pickup-title">{{pickup.name}}</view>
+            <view class="pickup-text">{{pickup.address}}，{{pickup.time}}</view>
+          </view>
+          <text class="chevron">›</text>
+        </view>
+      </view>
+
+      <view class="confirm-block">
+        <view class="pickup">
+          <view class="pickup-icon">电</view>
+          <view class="pickup-copy">
+            <view class="pickup-title">{{contact.name}} {{contact.phone}}</view>
+            <view class="pickup-text">用于到货提醒和自提核验</view>
+          </view>
+          <text class="chevron">›</text>
+        </view>
+      </view>
+
+      <view class="confirm-block">
+        <view class="block-title">商品清单</view>
+        <view class="confirm-goods">
+          <block wx:for="{{checkout.items}}" wx:key="productId">
+            <view class="confirm-item">
+              <image class="confirm-thumb" src="{{item.image}}" mode="aspectFill" />
+              <view class="confirm-copy">
+                <view class="confirm-name line-clamp-2">{{item.name}}</view>
+                <view class="confirm-spec">{{item.spec}} ×{{item.quantity}}</view>
+              </view>
+              <view class="confirm-subtotal">¥{{item.subtotalText}}</view>
+            </view>
+          </block>
+        </view>
+      </view>
+
+      <view class="confirm-block">
+        <view class="block-title">订单备注</view>
+        <textarea
+          class="remark"
+          maxlength="80"
+          placeholder="如缺货请电话联系，可接受同价替换"
+          value="{{remark}}"
+          bindinput="onRemarkInput"
+        />
+      </view>
+
+      <view class="confirm-block">
+        <view class="summary-line">
+          <text>商品金额</text>
+          <text>¥{{checkout.totalText}}</text>
+        </view>
+        <view class="summary-line">
+          <text>自提服务费</text>
+          <text>¥0.00</text>
+        </view>
+        <view class="summary-line total">
+          <text>应付合计</text>
+          <text>¥{{checkout.totalText}}</text>
+        </view>
+      </view>
+    </view>
+
+    <view wx:else class="empty-state">
+      <view class="empty-icon">单</view>
+      <text class="empty-title">没有待确认商品</text>
+      <text class="empty-copy">请先从购物车选择商品，或在商品详情页点击立即购买。</text>
+      <view class="primary-btn" bindtap="goHome">返回首页</view>
+    </view>
+  </scroll-view>
+
+  <view class="submit-bar" wx:if="{{checkout.items.length}}">
+    <view class="submit-total">
+      <text>合计：</text>
+      <text class="submit-price">¥{{checkout.totalText}}</text>
+    </view>
+    <view class="submit-btn" bindtap="submitOrder">提交订单</view>
+  </view>
+</view>

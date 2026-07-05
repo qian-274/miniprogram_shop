@@ -1,0 +1,16 @@
+<view class="page feedback-page">
+  <view class="feedback-card">
+    <view class="feedback-title">意见反馈</view>
+    <view class="feedback-copy">可提交使用问题、商品建议、服务建议或其他反馈。</view>
+    <textarea
+      class="feedback-input"
+      maxlength="300"
+      placeholder="请描述你遇到的问题或建议"
+      value="{{content}}"
+      bindinput="onInput"
+    />
+    <view class="input-count">{{content.length}}/300</view>
+  </view>
+
+  <view class="primary-btn submit-btn" bindtap="submit">提交反馈</view>
+</view>

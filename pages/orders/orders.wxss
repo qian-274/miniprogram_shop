@@ -1,0 +1,136 @@
+.orders-page {
+  padding-bottom: 36rpx;
+}
+
+.status-tabs {
+  white-space: nowrap;
+  padding: 20rpx 0 18rpx 28rpx;
+  background: #fff;
+  border-bottom: 1rpx solid #e5ece7;
+}
+
+.status-tab {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 60rpx;
+  margin-right: 14rpx;
+  padding: 0 24rpx;
+  color: #6d7a72;
+  font-size: 25rpx;
+  font-weight: 800;
+  border-radius: 12rpx;
+  background: #f2f5f1;
+}
+
+.status-tab.active {
+  color: #fff;
+  background: #1ecb3a;
+}
+
+.orders-list {
+  display: grid;
+  gap: 18rpx;
+  padding: 24rpx 28rpx;
+}
+
+.order-card {
+  overflow: hidden;
+  border: 1rpx solid #e5ece7;
+  border-radius: 16rpx;
+  background: #fff;
+}
+
+.order-head {
+  min-height: 76rpx;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 22rpx;
+  color: #6d7a72;
+  font-size: 23rpx;
+  font-weight: 800;
+  border-bottom: 1rpx solid #edf2ef;
+}
+
+.status-text {
+  color: #0f9f43;
+}
+
+.order-goods {
+  display: grid;
+  grid-template-columns: 210rpx 1fr;
+  gap: 16rpx;
+  align-items: center;
+  padding: 20rpx 22rpx;
+}
+
+.goods-thumbs {
+  display: flex;
+  gap: 12rpx;
+}
+
+.goods-thumb {
+  width: 96rpx;
+  height: 96rpx;
+  border-radius: 12rpx;
+}
+
+.goods-summary {
+  min-width: 0;
+}
+
+.goods-title {
+  color: #1f2b25;
+  font-size: 28rpx;
+  font-weight: 900;
+}
+
+.goods-meta {
+  margin-top: 10rpx;
+  color: #6d7a72;
+  font-size: 23rpx;
+}
+
+.order-foot {
+  min-height: 96rpx;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18rpx;
+  padding: 16rpx 22rpx;
+  background: #fbfcfa;
+  border-top: 1rpx solid #edf2ef;
+}
+
+.order-time {
+  color: #8a958d;
+  font-size: 22rpx;
+}
+
+.order-total {
+  margin-top: 8rpx;
+  color: #1f2b25;
+  font-size: 26rpx;
+  font-weight: 900;
+}
+
+.order-action {
+  flex: none;
+  min-width: 152rpx;
+  height: 60rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 18rpx;
+  color: #fff;
+  font-size: 24rpx;
+  font-weight: 900;
+  border-radius: 12rpx;
+  background: #1ecb3a;
+}
+
+.empty-action {
+  width: 260rpx;
+  margin-top: 12rpx;
+}

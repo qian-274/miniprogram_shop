@@ -1,0 +1,39 @@
+<view class="page search-page">
+  <view class="search-box">
+    <text class="search-icon">⌕</text>
+    <input
+      class="search-input"
+      value="{{keyword}}"
+      placeholder="请输入商品关键词"
+      confirm-type="search"
+      bindinput="onKeywordInput"
+      bindconfirm="onSearchConfirm"
+    />
+    <view class="search-button" bindtap="onSearchConfirm">搜索</view>
+  </view>
+
+  <view wx:if="{{products.length}}" class="result-list">
+    <view class="result-count">找到 {{products.length}} 个相关商品</view>
+    <block wx:for="{{products}}" wx:key="id">
+      <view class="result-item tap-card" data-id="{{item.id}}" bindtap="goDetail">
+        <image class="result-image" src="{{item.image}}" mode="aspectFill" />
+        <view class="result-copy">
+          <view class="result-title line-clamp-2">{{item.name}}</view>
+          <view class="result-desc line-clamp-1">{{item.categoryName}} · {{item.spec}}</view>
+          <view class="result-footer">
+            <text class="price"><text class="price-small">¥</text>{{item.priceText}}</text>
+            <view wx:if="{{item.available}}" class="mini-cart-btn" data-id="{{item.id}}" catchtap="addCart">+</view>
+            <view wx:else class="soldout-btn">售罄</view>
+          </view>
+        </view>
+      </view>
+    </block>
+  </view>
+
+  <view wx:else class="empty-state">
+    <view class="empty-icon">搜</view>
+    <text class="empty-title">未找到相关商品</text>
+    <text class="empty-copy">换个关键词试试，例如“水果”“蔬菜”“牛奶”。</text>
+    <view class="primary-btn empty-action" bindtap="goHome">返回首页</view>
+  </view>
+</view>

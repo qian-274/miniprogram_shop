@@ -1,0 +1,28 @@
+<view class="page favorites-page">
+  <view wx:if="{{products.length}}" class="favorite-list">
+    <block wx:for="{{products}}" wx:key="id">
+      <view class="favorite-item tap-card" data-id="{{item.id}}" bindtap="goDetail">
+        <image class="favorite-image" src="{{item.image}}" mode="aspectFill" />
+        <view class="favorite-copy">
+          <view class="favorite-title line-clamp-2">{{item.name}}</view>
+          <view class="favorite-desc line-clamp-1">{{item.spec}} · {{item.categoryName}}</view>
+          <view class="favorite-footer">
+            <text class="price"><text class="price-small">¥</text>{{item.priceText}}</text>
+            <view class="footer-actions">
+              <view class="ghost-mini" data-id="{{item.id}}" catchtap="removeFavorite">取消</view>
+              <view wx:if="{{item.available}}" class="mini-cart-btn" data-id="{{item.id}}" catchtap="addCart">+</view>
+              <view wx:else class="soldout-btn">售罄</view>
+            </view>
+          </view>
+        </view>
+      </view>
+    </block>
+  </view>
+
+  <view wx:else class="empty-state">
+    <view class="empty-icon">♡</view>
+    <text class="empty-title">还没有收藏商品</text>
+    <text class="empty-copy">在商品详情页点击收藏，常买商品会集中展示在这里。</text>
+    <view class="primary-btn empty-action" bindtap="goHome">去首页逛逛</view>
+  </view>
+</view>

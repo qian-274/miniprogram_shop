@@ -1,0 +1,83 @@
+<view class="page with-tab cart-page">
+  <view class="cart-notice">
+    <text class="notice-icon">⌖</text>
+    <text>默认自提点：幸福社区 2 号门自提柜</text>
+  </view>
+
+  <view wx:if="{{!isEmpty}}" class="cart-list">
+    <block wx:for="{{items}}" wx:key="productId">
+      <view class="cart-item {{item.available ? '' : 'disabled-cart'}}">
+        <view
+          class="cart-check {{item.selected ? 'checked' : ''}} {{item.available ? '' : 'disabled'}}"
+          data-id="{{item.productId}}"
+          catchtap="toggleItem"
+        >
+          <text wx:if="{{item.selected}}">✓</text>
+          <text wx:elif="{{!item.available}}">×</text>
+        </view>
+
+        <image
+          class="cart-thumb"
+          src="{{item.image}}"
+          mode="aspectFill"
+          data-id="{{item.productId}}"
+          bindtap="goDetail"
+        />
+
+        <view class="cart-copy">
+          <view class="cart-title line-clamp-2" data-id="{{item.productId}}" bindtap="goDetail">{{item.name}}</view>
+          <view class="cart-meta line-clamp-1">{{item.available ? item.spec : item.disabledText}}</view>
+          <view class="cart-actions">
+            <text class="price"><text class="price-small">¥</text>{{item.priceText}}</text>
+            <view class="quantity">
+              <view
+                class="quantity-btn"
+                data-id="{{item.productId}}"
+                data-quantity="{{item.cartQuantity}}"
+                data-delta="-1"
+                catchtap="changeQuantity"
+              >−</view>
+              <text>{{item.cartQuantity}}</text>
+              <view
+                class="quantity-btn"
+                data-id="{{item.productId}}"
+                data-quantity="{{item.cartQuantity}}"
+                data-delta="1"
+                catchtap="changeQuantity"
+              >+</view>
+            </view>
+          </view>
+          <view class="cart-row-foot">
+            <text>小计 ¥{{item.subtotalText}}</text>
+            <text class="remove-link" data-id="{{item.productId}}" data-name="{{item.name}}" catchtap="removeItem">删除</text>
+          </view>
+        </view>
+      </view>
+    </block>
+  </view>
+
+  <view wx:else class="empty-state empty-cart">
+    <view class="empty-icon">车</view>
+    <text class="empty-title">购物车还是空的</text>
+    <text class="empty-copy">去首页看看今日团购和精选商品，凑齐一单更划算。</text>
+    <view class="primary-btn empty-action" bindtap="goHome">去首页逛逛</view>
+  </view>
+
+  <view class="settle-bar" wx:if="{{!isEmpty}}">
+    <view class="settle-select" bindtap="toggleAll">
+      <view class="cart-check {{allSelected ? 'checked' : ''}}">
+        <text wx:if="{{allSelected}}">✓</text>
+      </view>
+      <text>全选</text>
+    </view>
+    <view class="settle-total">
+      <text>合计：</text>
+      <text class="settle-price">¥{{totalText}}</text>
+    </view>
+    <view class="settle-btn {{hasSelected ? '' : 'disabled'}}" bindtap="settle">
+      {{settleButtonText}}
+    </view>
+  </view>
+
+  <custom-tab-bar active="cart" />
+</view>

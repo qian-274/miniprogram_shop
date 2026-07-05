@@ -1,49 +1,76 @@
-// index.js
-const defaultAvatarUrl = 'https://mmbiz.qpic.cn/mmbiz/icTdbqWNOwNRna42FI242Lcia07jQodd2FJGIYQfG0LAJGFxM4FbnQP6yfMxBgJ0F3YRqJCJ1aPAK2dQagdusBZg/0'
+const store = require('../../utils/store')
 
 Page({
   data: {
-    motto: 'Hello World',
-    userInfo: {
-      avatarUrl: defaultAvatarUrl,
-      nickName: '',
-    },
-    hasUserInfo: false,
-    canIUseGetUserProfile: wx.canIUse('getUserProfile'),
-    canIUseNicknameComp: wx.canIUse('input.type.nickname'),
+    banners: [],
+    categories: [],
+    featuredProducts: [],
+    groupProducts: [],
+    keyword: '',
+    pickupText: ''
   },
-  bindViewTap() {
+
+  onLoad() {
+    this.loadHome()
+  },
+
+  loadHome() {
+    const { mock } = store
+    const groupProducts = mock.products.filter((item) => item.group).slice(0, 4)
+    const featuredProducts = mock.products.filter((item) => item.featured).slice(0, 5)
+
+    this.setData({
+      banners: mock.banners,
+      categories: mock.categories,
+      groupProducts: store.enrichProducts(groupProducts),
+      featuredProducts: store.enrichProducts(featuredProducts),
+      pickupText: `${mock.pickupInfo.name} · ${mock.pickupInfo.time}`
+    })
+  },
+
+  onKeywordInput(event) {
+    this.setData({
+      keyword: event.detail.value
+    })
+  },
+
+  onSearchConfirm(event) {
+    const keyword = String(event.detail.value || this.data.keyword || '').trim()
+
+    if (!keyword) {
+      wx.showToast({
+        title: '请输入商品关键词',
+        icon: 'none'
+      })
+      return
+    }
+
     wx.navigateTo({
-      url: '../logs/logs'
+      url: `/pages/search/search?keyword=${encodeURIComponent(keyword)}`
     })
   },
-  onChooseAvatar(e) {
-    const { avatarUrl } = e.detail
-    const { nickName } = this.data.userInfo
-    this.setData({
-      "userInfo.avatarUrl": avatarUrl,
-      hasUserInfo: nickName && avatarUrl && avatarUrl !== defaultAvatarUrl,
+
+  goCategory(event) {
+    const { id } = event.currentTarget.dataset
+    wx.reLaunch({
+      url: `/pages/category/category?categoryId=${id}`
     })
   },
-  onInputChange(e) {
-    const nickName = e.detail.value
-    const { avatarUrl } = this.data.userInfo
-    this.setData({
-      "userInfo.nickName": nickName,
-      hasUserInfo: nickName && avatarUrl && avatarUrl !== defaultAvatarUrl,
+
+  goDetail(event) {
+    const { id } = event.currentTarget.dataset
+    wx.navigateTo({
+      url: `/pages/detail/detail?id=${id}`
     })
   },
-  getUserProfile(e) {
-    // 推荐使用wx.getUserProfile获取用户信息，开发者每次通过该接口获取用户个人信息均需用户确认，开发者妥善保管用户快速填写的头像昵称，避免重复弹窗
-    wx.getUserProfile({
-      desc: '展示用户信息', // 声明获取用户个人信息后的用途，后续会展示在弹窗中，请谨慎填写
-      success: (res) => {
-        console.log(res)
-        this.setData({
-          userInfo: res.userInfo,
-          hasUserInfo: true
-        })
-      }
+
+  addCart(event) {
+    const { id } = event.currentTarget.dataset
+    const result = store.addToCart(id, 1)
+
+    wx.showToast({
+      title: result.message,
+      icon: result.ok ? 'success' : 'none'
     })
-  },
+  }
 })

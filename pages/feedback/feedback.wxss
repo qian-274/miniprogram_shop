@@ -1,0 +1,46 @@
+.feedback-page {
+  padding: 24rpx 28rpx 40rpx;
+}
+
+.feedback-card {
+  padding: 28rpx;
+  border: 1rpx solid #e5ece7;
+  border-radius: 16rpx;
+  background: #fff;
+}
+
+.feedback-title {
+  color: #1f2b25;
+  font-size: 34rpx;
+  font-weight: 900;
+}
+
+.feedback-copy {
+  margin-top: 12rpx;
+  color: #6d7a72;
+  font-size: 25rpx;
+  line-height: 1.6;
+}
+
+.feedback-input {
+  width: 100%;
+  min-height: 330rpx;
+  margin-top: 24rpx;
+  padding: 22rpx;
+  color: #1f2b25;
+  font-size: 27rpx;
+  line-height: 1.55;
+  border-radius: 14rpx;
+  background: #f6f8f4;
+}
+
+.input-count {
+  margin-top: 12rpx;
+  color: #9aa59e;
+  font-size: 23rpx;
+  text-align: right;
+}
+
+.submit-btn {
+  margin-top: 26rpx;
+}

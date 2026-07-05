@@ -1,0 +1,73 @@
+<view class="page detail-page" wx:if="{{product}}">
+  <scroll-view class="detail-scroll" scroll-y="{{true}}" enhanced="{{true}}" show-scrollbar="{{false}}">
+    <image class="detail-hero" src="{{product.image}}" mode="aspectFill" />
+
+    <view class="detail-card">
+      <view class="tag-row">
+        <text class="pill">{{product.tag}}</text>
+        <text class="stock {{product.available ? '' : 'soldout'}}">{{product.stockText}}</text>
+      </view>
+      <view class="detail-title">{{product.name}}</view>
+      <view class="detail-price-row">
+        <text class="price"><text class="price-small">¥</text>{{product.priceText}}</text>
+        <view class="favorite {{isFavorite ? 'active' : ''}}" bindtap="toggleFavorite">
+          <text>{{isFavorite ? '♥' : '♡'}}</text>
+          <text>{{isFavorite ? '已收藏' : '收藏'}}</text>
+        </view>
+      </view>
+      <view class="detail-desc">{{product.desc}}</view>
+    </view>
+
+    <view class="info-block">
+      <view class="info-line">
+        <text>分类</text>
+        <text>{{product.categoryName}}</text>
+      </view>
+      <view class="info-line">
+        <text>规格</text>
+        <text>{{product.spec}}</text>
+      </view>
+      <view class="info-line">
+        <text>自提</text>
+        <text>{{product.pickup}}</text>
+      </view>
+      <view class="info-line">
+        <text>数量</text>
+        <view class="quantity">
+          <view class="quantity-btn" data-delta="-1" bindtap="changeQuantity">−</view>
+          <text>{{quantity}}</text>
+          <view class="quantity-btn" data-delta="1" bindtap="changeQuantity">+</view>
+        </view>
+      </view>
+    </view>
+
+    <view class="info-block">
+      <view class="block-title">商品详情</view>
+      <view class="block-copy">
+        精选社区团购生鲜商品，平台统一汇总订单后配送至自提点。请在自提时间内凭手机号核验取货，建议生鲜类商品当天食用或冷藏保存。
+      </view>
+    </view>
+  </scroll-view>
+
+  <view class="detail-footer">
+    <view class="detail-tool" bindtap="goHome">
+      <text class="tool-icon">⌂</text>
+      <text>首页</text>
+    </view>
+    <view class="detail-tool" bindtap="goCart">
+      <text class="tool-icon">▣</text>
+      <text>购物车</text>
+    </view>
+    <view class="footer-btn cart {{product.available ? '' : 'disabled'}}" bindtap="addCart">加入购物车</view>
+    <view class="footer-btn buy {{product.available ? '' : 'disabled'}}" bindtap="buyNow">立即购买</view>
+  </view>
+</view>
+
+<view class="page" wx:else>
+  <view class="empty-state">
+    <view class="empty-icon">空</view>
+    <text class="empty-title">商品不存在</text>
+    <text class="empty-copy">请返回首页重新选择商品。</text>
+    <view class="primary-btn" bindtap="goHome">返回首页</view>
+  </view>
+</view>
