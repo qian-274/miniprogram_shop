@@ -8,7 +8,8 @@ Page({
     products: []
   },
 
-  onLoad(options) {
+  async onLoad(options) {
+    await store.syncCatalogFromCloud()
     const firstCategory = store.mock.categories[0]
     this.setData({
       categories: store.mock.categories

@@ -1,0 +1,57 @@
+<view class="page owner-products-page">
+  <scroll-view class="status-tabs" scroll-x="{{true}}" enhanced="{{true}}" show-scrollbar="{{false}}">
+    <block wx:for="{{statusTabs}}" wx:key="key">
+      <view
+        class="status-tab {{activeStatus == item.key ? 'active' : ''}}"
+        data-status="{{item.key}}"
+        bindtap="selectStatus"
+      >
+        {{item.name}}
+      </view>
+    </block>
+  </scroll-view>
+
+  <view wx:if="{{loading}}" class="empty-state">
+    <view class="empty-icon">货</view>
+    <text class="empty-title">正在汇总商品</text>
+  </view>
+
+  <view wx:elif="{{!canManage}}" class="empty-state">
+    <view class="empty-icon">锁</view>
+    <text class="empty-title">暂无店主权限</text>
+    <text class="empty-copy">{{error}}</text>
+  </view>
+
+  <view wx:else class="content">
+    <view class="summary-strip">
+      <view>
+        <view class="summary-title">{{pickup.name}}</view>
+        <view class="summary-copy">当前筛选 {{stats.totalOrders || 0}} 单，共 {{stats.itemCount || 0}} 件商品</view>
+      </view>
+      <view class="summary-count">{{products.length}}</view>
+    </view>
+
+    <view wx:if="{{products.length}}" class="product-list">
+      <block wx:for="{{products}}" wx:key="productId">
+        <view class="product-card">
+          <image class="product-image" src="{{item.image}}" mode="aspectFill" />
+          <view class="product-main">
+            <view class="product-title line-clamp-1">{{item.name}}</view>
+            <view class="product-spec">{{item.spec || '标准份'}}</view>
+            <view class="product-status">{{item.statusText || '暂无状态'}}</view>
+          </view>
+          <view class="product-side">
+            <view class="qty">×{{item.totalQuantity}}</view>
+            <view class="orders">{{item.orderCount}} 单</view>
+          </view>
+        </view>
+      </block>
+    </view>
+
+    <view wx:else class="empty-state">
+      <view class="empty-icon">空</view>
+      <text class="empty-title">暂无到店商品</text>
+      <text class="empty-copy">当前筛选状态下没有需要备货的商品。</text>
+    </view>
+  </view>
+</view>

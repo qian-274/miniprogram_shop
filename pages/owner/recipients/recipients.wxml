@@ -1,0 +1,92 @@
+<view class="page owner-recipients-page">
+  <view class="search-panel">
+    <view class="search-box">
+      <text class="search-icon">⌕</text>
+      <input
+        class="search-input"
+        placeholder="搜索姓名、手机号、订单号或商品"
+        confirm-type="search"
+        value="{{keyword}}"
+        bindinput="onKeywordInput"
+        bindconfirm="onSearchConfirm"
+      />
+      <view wx:if="{{keyword}}" class="clear-btn" bindtap="clearSearch">清空</view>
+      <view wx:else class="search-btn" bindtap="onSearchConfirm">搜索</view>
+    </view>
+  </view>
+
+  <scroll-view class="status-tabs" scroll-x="{{true}}" enhanced="{{true}}" show-scrollbar="{{false}}">
+    <block wx:for="{{statusTabs}}" wx:key="key">
+      <view
+        class="status-tab {{activeStatus == item.key ? 'active' : ''}}"
+        data-status="{{item.key}}"
+        bindtap="selectStatus"
+      >
+        {{item.name}}
+      </view>
+    </block>
+  </scroll-view>
+
+  <view wx:if="{{loading}}" class="empty-state">
+    <view class="empty-icon">人</view>
+    <text class="empty-title">正在读取收货人</text>
+  </view>
+
+  <view wx:elif="{{!canManage}}" class="empty-state">
+    <view class="empty-icon">锁</view>
+    <text class="empty-title">暂无店主权限</text>
+    <text class="empty-copy">{{error}}</text>
+  </view>
+
+  <view wx:elif="{{orders.length}}" class="recipient-list">
+    <block wx:for="{{orders}}" wx:key="orderId">
+      <view class="recipient-card">
+        <view class="recipient-head">
+          <view>
+            <view class="recipient-name">{{item.name}}</view>
+            <view class="recipient-phone">{{item.phone || '未填写手机号'}}</view>
+          </view>
+          <view class="status-pill {{item.canPickup ? 'ready' : ''}}">{{item.statusText}}</view>
+        </view>
+
+        <view class="order-line">
+          <text>{{item.orderId}}</text>
+          <text>{{item.time}}</text>
+        </view>
+
+        <view class="goods-list">
+          <block wx:for="{{item.items}}" wx:key="productId" wx:for-item="goods">
+            <view class="goods-row">
+              <image class="goods-thumb" src="{{goods.image}}" mode="aspectFill" />
+              <view class="goods-copy">
+                <view class="goods-name line-clamp-1">{{goods.name}}</view>
+                <view class="goods-spec">{{goods.spec || '标准份'}} · ¥{{goods.priceText}}</view>
+              </view>
+              <view class="goods-qty">×{{goods.quantity}}</view>
+            </view>
+          </block>
+        </view>
+
+        <view wx:if="{{item.remark}}" class="remark">备注：{{item.remark}}</view>
+
+        <view class="card-foot">
+          <view class="total">合计 ¥{{item.totalText}}</view>
+          <view
+            wx:if="{{item.canPickup}}"
+            class="pickup-btn"
+            data-id="{{item.orderId}}"
+            bindtap="markPickedUp"
+          >
+            标记已提货
+          </view>
+        </view>
+      </view>
+    </block>
+  </view>
+
+  <view wx:else class="empty-state">
+    <view class="empty-icon">空</view>
+    <text class="empty-title">暂无收货人</text>
+    <text class="empty-copy">当前条件下没有订单，可切换状态或清空搜索。</text>
+  </view>
+</view>

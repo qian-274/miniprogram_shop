@@ -10,10 +10,11 @@ Page({
     quantity: 1
   },
 
-  onLoad(options) {
+  async onLoad(options) {
     this.setData({
       highlightedGroupId: options.groupId || ''
     })
+    await store.syncCatalogFromCloud()
     this.loadProduct(options.id)
   },
 

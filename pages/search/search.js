@@ -6,9 +6,10 @@ Page({
     products: []
   },
 
-  onLoad(options) {
+  async onLoad(options) {
     const keyword = decodeURIComponent(options.keyword || '')
     this.setData({ keyword })
+    await store.syncCatalogFromCloud()
     this.search(keyword)
   },
 

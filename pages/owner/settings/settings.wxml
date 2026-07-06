@@ -1,0 +1,84 @@
+<view class="page owner-settings-page">
+  <view wx:if="{{loading}}" class="empty-state">
+    <view class="empty-icon">设</view>
+    <text class="empty-title">正在读取自提点</text>
+  </view>
+
+  <view wx:elif="{{!canManage}}" class="empty-state">
+    <view class="empty-icon">锁</view>
+    <text class="empty-title">暂无店主权限</text>
+    <text class="empty-copy">{{error}}</text>
+  </view>
+
+  <view wx:else>
+    <view class="settings-hero">
+      <view class="settings-kicker">自提点基础信息</view>
+      <view class="settings-title">{{form.name}}</view>
+      <view class="settings-copy">名称由后台管理员维护，店主可更新营业信息。</view>
+    </view>
+
+    <view class="form-card">
+      <view class="field-row readonly">
+        <view class="field-label">自提点名称</view>
+        <input class="field-input" disabled value="{{form.name}}" />
+      </view>
+
+      <view class="field-row">
+        <view class="field-label">地址</view>
+        <input
+          class="field-input"
+          placeholder="请输入自提点详细地址"
+          value="{{form.address}}"
+          data-field="address"
+          bindinput="onInput"
+        />
+      </view>
+
+      <view class="field-row">
+        <view class="field-label">营业时间</view>
+        <input
+          class="field-input"
+          placeholder="如：明日 16:00-20:00 可取"
+          value="{{form.serviceTime}}"
+          data-field="serviceTime"
+          bindinput="onInput"
+        />
+      </view>
+
+      <view class="field-row">
+        <view class="field-label">联系电话</view>
+        <input
+          class="field-input"
+          type="number"
+          placeholder="请输入店主联系电话"
+          value="{{form.phone}}"
+          data-field="phone"
+          bindinput="onInput"
+        />
+      </view>
+
+      <view class="field-block">
+        <view class="field-label">公告</view>
+        <textarea
+          class="notice-input"
+          maxlength="100"
+          placeholder="如：请凭手机号后四位取货，冷链商品请尽快领取"
+          value="{{form.notice}}"
+          data-field="notice"
+          bindinput="onInput"
+        />
+      </view>
+    </view>
+
+    <view class="tips-card">
+      <view class="tips-title">设置说明</view>
+      <view class="tips-copy">用户端自提点选择和订单确认页会展示这里维护的地址、时间和电话。若需要修改自提点名称或绑定店主，请在 CloudBase 后台处理。</view>
+    </view>
+
+    <view class="save-bar">
+      <view class="save-btn {{saving ? 'disabled' : ''}}" bindtap="saveSettings">
+        {{saving ? '保存中' : '保存设置'}}
+      </view>
+    </view>
+  </view>
+</view>

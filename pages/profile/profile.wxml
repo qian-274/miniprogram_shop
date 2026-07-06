@@ -55,6 +55,15 @@
   </view>
 
   <view class="service-list">
+    <view wx:if="{{ownerEntry.visible}}" class="owner-entry tap-card" bindtap="goOwner">
+      <view class="owner-entry-copy">
+        <view class="owner-kicker">自提点店主端</view>
+        <view class="owner-title">{{ownerEntry.pickupName || '店主工作台'}}</view>
+        <view class="owner-desc">待自提 {{ownerEntry.readyOrders}} 单 · 查看到店商品和收货人</view>
+      </view>
+      <view class="owner-go">进入</view>
+    </view>
+
     <view class="service-row" bindtap="goFavorites">
       <view class="service-icon">♡</view>
       <text>我的收藏</text>

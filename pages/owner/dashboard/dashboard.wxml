@@ -1,0 +1,112 @@
+<view class="page owner-page">
+  <view wx:if="{{loading}}" class="empty-state">
+    <view class="empty-icon">店</view>
+    <text class="empty-title">正在读取店主数据</text>
+    <text class="empty-copy">请稍候，正在校验自提点绑定关系。</text>
+  </view>
+
+  <view wx:elif="{{!canManage}}" class="empty-state">
+    <view class="empty-icon">锁</view>
+    <text class="empty-title">暂无店主权限</text>
+    <text class="empty-copy">{{error || '请先在后台将当前微信 openid 绑定到自提点。'}}</text>
+    <view class="primary-btn owner-empty-action" bindtap="goProfile">返回我的</view>
+  </view>
+
+  <view wx:else>
+    <view class="owner-hero">
+      <view class="hero-top">
+        <view>
+          <view class="owner-kicker">自提点店主端{{demo ? ' · 演示' : ''}}</view>
+          <view class="owner-title">{{pickup.name}}</view>
+          <view class="owner-subtitle">{{pickup.address}}</view>
+        </view>
+        <view class="refresh-btn" bindtap="loadDashboard">刷新</view>
+      </view>
+      <view class="hero-notice">{{pickup.serviceTime || pickup.time || '请在自提点设置中维护营业时间'}}</view>
+    </view>
+
+    <view class="stats-grid">
+      <view class="stat-card">
+        <text class="stat-num">{{stats.totalOrders}}</text>
+        <text class="stat-label">全部订单</text>
+      </view>
+      <view class="stat-card warm">
+        <text class="stat-num">{{stats.preparingOrders}}</text>
+        <text class="stat-label">待备货</text>
+      </view>
+      <view class="stat-card green">
+        <text class="stat-num">{{stats.readyOrders}}</text>
+        <text class="stat-label">待自提</text>
+      </view>
+      <view class="stat-card">
+        <text class="stat-num">{{stats.itemCount}}</text>
+        <text class="stat-label">商品件数</text>
+      </view>
+    </view>
+
+    <view class="owner-actions">
+      <view class="owner-action tap-card" bindtap="goProducts">
+        <view class="action-icon">货</view>
+        <view class="action-copy">
+          <view class="action-title">到店商品</view>
+          <view class="action-desc">按商品汇总数量</view>
+        </view>
+        <text class="chevron">›</text>
+      </view>
+      <view class="owner-action tap-card" bindtap="goRecipients">
+        <view class="action-icon">人</view>
+        <view class="action-copy">
+          <view class="action-title">收货人列表</view>
+          <view class="action-desc">核对手机号和订单</view>
+        </view>
+        <text class="chevron">›</text>
+      </view>
+      <view class="owner-action tap-card" bindtap="goSettings">
+        <view class="action-icon">设</view>
+        <view class="action-copy">
+          <view class="action-title">自提点设置</view>
+          <view class="action-desc">维护时间、电话、公告</view>
+        </view>
+        <text class="chevron">›</text>
+      </view>
+    </view>
+
+    <view class="section-head owner-section-head">
+      <view class="section-title">今日商品概览</view>
+      <view class="section-more" bindtap="goProducts">全部</view>
+    </view>
+
+    <view wx:if="{{products.length}}" class="owner-list">
+      <block wx:for="{{products}}" wx:key="productId">
+        <view class="product-row">
+          <image class="product-thumb" src="{{item.image}}" mode="aspectFill" />
+          <view class="product-copy">
+            <view class="product-name line-clamp-1">{{item.name}}</view>
+            <view class="product-meta">{{item.spec || '散装/标准份'}} · {{item.orderCount}} 单</view>
+            <view class="product-status">{{item.statusText}}</view>
+          </view>
+          <view class="product-qty">×{{item.totalQuantity}}</view>
+        </view>
+      </block>
+    </view>
+    <view wx:else class="owner-empty-box">暂无到店商品，可在用户端提交订单后查看。</view>
+
+    <view class="section-head owner-section-head">
+      <view class="section-title">最近收货人</view>
+      <view class="section-more" bindtap="goRecipients">全部</view>
+    </view>
+
+    <view wx:if="{{recentOrders.length}}" class="owner-list">
+      <block wx:for="{{recentOrders}}" wx:key="orderId">
+        <view class="recipient-mini-row">
+          <view>
+            <view class="recipient-name">{{item.name}} {{item.phone}}</view>
+            <view class="recipient-goods line-clamp-1">{{item.items[0].name}} 等 {{item.items.length}} 项</view>
+          </view>
+          <view class="status-pill">{{item.statusText}}</view>
+        </view>
+      </block>
+    </view>
+    <view wx:else class="owner-empty-box">暂无收货人信息。</view>
+  </view>
+</view>

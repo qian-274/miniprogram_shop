@@ -10,7 +10,9 @@ Page({
     pickupText: ''
   },
 
-  onLoad() {
+  async onLoad() {
+    this.loadHome()
+    await store.syncCatalogFromCloud()
     this.loadHome()
   },
 

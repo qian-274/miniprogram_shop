@@ -16,6 +16,11 @@ const ADDRESS_KEY = 'fresh_user_addresses'
 const FEEDBACK_KEY = 'fresh_feedback'
 const CLOUD_GROUPS_COLLECTION = 'fresh_groups'
 const CLOUD_GROUP_MEMBERS_COLLECTION = 'fresh_group_members'
+const CLOUD_BANNERS_COLLECTION = 'banners'
+const CLOUD_CATEGORIES_COLLECTION = 'categories'
+const CLOUD_ORDERS_COLLECTION = 'orders'
+const CLOUD_PICKUP_POINTS_COLLECTION = 'pickup_points'
+const CLOUD_PRODUCTS_COLLECTION = 'products'
 const LEGACY_DEMO_GROUP_IDS = ['GRP20260705001', 'GRP20260705002']
 const LEGACY_DEMO_ORDER_IDS = ['ORD20260705001', 'ORD20260704002', 'ORD20260703006']
 
@@ -174,6 +179,19 @@ function isGroupEnabled(product) {
 
 function getPickupPoint(pickupId) {
   return mock.pickupPoints.find((item) => item.id === pickupId) || mock.pickupInfo
+}
+
+function getPickupPointSnapshot(pickupId) {
+  const pickup = getPickupPoint(pickupId)
+
+  return {
+    id: pickup.id,
+    name: pickup.name,
+    address: pickup.address,
+    time: pickup.time || pickup.serviceTime || '',
+    phone: pickup.phone || '',
+    notice: pickup.notice || ''
+  }
 }
 
 function getCurrentUser() {
@@ -614,6 +632,111 @@ async function safeGetCloudCollectionData(collectionName) {
   }
 }
 
+function normalizeCloudBaseDoc(doc = {}) {
+  return {
+    ...doc,
+    id: doc.id || doc._id
+  }
+}
+
+function normalizeCloudBanner(doc) {
+  return normalizeCloudBaseDoc(doc)
+}
+
+function normalizeCloudCategory(doc) {
+  return normalizeCloudBaseDoc(doc)
+}
+
+function normalizeCloudPickup(doc = {}) {
+  const item = normalizeCloudBaseDoc(doc)
+
+  return {
+    ...item,
+    time: item.time || item.serviceTime || '',
+    distance: item.distance || item.distanceText || ''
+  }
+}
+
+function normalizeCloudProduct(doc = {}) {
+  const item = normalizeCloudBaseDoc(doc)
+  const groupEnabled = item.group !== undefined ? item.group : !!item.groupEnabled
+
+  return {
+    ...item,
+    group: groupEnabled,
+    featured: !!item.featured,
+    status: item.status || (Number(item.stock || 0) > 0 ? 'available' : 'soldout')
+  }
+}
+
+function sortBySortField(items) {
+  return items.slice().sort((left, right) => {
+    const leftSort = Number(left.sort || 0)
+    const rightSort = Number(right.sort || 0)
+
+    if (leftSort !== rightSort) {
+      return leftSort - rightSort
+    }
+
+    return String(left.id || '').localeCompare(String(right.id || ''))
+  })
+}
+
+async function syncCatalogFromCloud() {
+  if (!canUseCloud() || !mock.setCatalog) {
+    return false
+  }
+
+  const [categoryDocs, productDocs, bannerDocs, pickupDocs] = await Promise.all([
+    safeGetCloudCollectionData(CLOUD_CATEGORIES_COLLECTION),
+    safeGetCloudCollectionData(CLOUD_PRODUCTS_COLLECTION),
+    safeGetCloudCollectionData(CLOUD_BANNERS_COLLECTION),
+    safeGetCloudCollectionData(CLOUD_PICKUP_POINTS_COLLECTION)
+  ])
+
+  const catalog = {}
+
+  if (categoryDocs.length) {
+    catalog.categories = sortBySortField(
+      categoryDocs
+        .map(normalizeCloudCategory)
+        .filter((item) => item.enabled !== false && item.status !== 'hidden')
+    )
+  }
+
+  if (productDocs.length) {
+    catalog.products = sortBySortField(
+      productDocs
+        .map(normalizeCloudProduct)
+        .filter((item) => item.status !== 'hidden')
+    )
+  }
+
+  if (bannerDocs.length) {
+    catalog.banners = sortBySortField(
+      bannerDocs
+        .map(normalizeCloudBanner)
+        .filter((item) => item.enabled !== false)
+    )
+  }
+
+  if (pickupDocs.length) {
+    catalog.pickupPoints = sortBySortField(
+      pickupDocs
+        .map(normalizeCloudPickup)
+        .filter((item) => item.status !== 'closed' && item.enabled !== false)
+    )
+  }
+
+  const changed = Object.keys(catalog).length > 0
+
+  if (changed) {
+    mock.setCatalog(catalog)
+  }
+
+  return changed
+}
+
 async function syncGroupsFromCloud() {
   if (!canUseCloud()) {
     return false
@@ -712,8 +835,72 @@ async function publishGroupChange(groupId) {
   }
 }
 
-function syncSharedData() {
-  return syncGroupsFromCloud()
+async function syncSharedData() {
+  const [catalogSynced, groupsSynced] = await Promise.all([
+    syncCatalogFromCloud(),
+    syncGroupsFromCloud()
+  ])
+
+  return catalogSynced || groupsSynced
+}
+
+function sanitizeOrderItemForCloud(item) {
+  const product = mock.getProduct(item.productId)
+  const quantity = Number(item.quantity) || 1
+  const price = Number(item.price || (product && product.price) || 0)
+
+  return {
+    productId: item.productId,
+    quantity,
+    price,
+    originalPrice: Number(item.originalPrice || (product && product.price) || price),
+    groupPrice: item.groupPrice === null || item.groupPrice === undefined ? null : Number(item.groupPrice),
+    subtotal: price * quantity,
+    productSnapshot: product ? {
+      id: product.id,
+      name: product.name,
+      image: product.image,
+      spec: product.spec,
+      categoryId: product.categoryId,
+      tag: product.tag || ''
+    } : {}
+  }
+}
+
+function sanitizeOrderForCloud(order) {
+  const user = getCurrentUser()
+  const items = (order.items || []).map(sanitizeOrderItemForCloud)
+  const totalAmount = items.reduce((sum, item) => sum + Number(item.subtotal || 0), 0)
+  const pickupId = order.pickupId || mock.pickupInfo.id
+
+  return {
+    id: order.id,
+    userId: user.id,
+    userOpenid: user.openid || getStorage(USER_OPENID_KEY, ''),
+    status: order.status || 'pending_ship',
+    time: order.time || formatTime(new Date()),
+    createdAt: order.createdAt || order.time || formatTime(new Date()),
+    updatedAt: formatTime(new Date()),
+    pickup: order.pickup || getPickupPoint(pickupId).name,
+    pickupId,
+    pickupSnapshot: getPickupPointSnapshot(pickupId),
+    contact: order.contact || {},
+    remark: order.remark || '',
+    items,
+    totalAmount,
+    isGroup: !!order.isGroup,
+    groupId: order.groupId || '',
+    groupRole: order.groupRole || '',
+    paidAt: order.paidAt || order.time || formatTime(new Date())
+  }
+}
+
+async function publishOrderToCloud(order) {
+  if (!order || !order.id) {
+    return { ok: false, message: '订单不存在' }
+  }
+
+  return saveCloudDoc(CLOUD_ORDERS_COLLECTION, order.id, sanitizeOrderForCloud(order))
 }
 
 function enrichCartItem(item) {
@@ -1231,6 +1418,12 @@ async function createOrderFromCheckoutAsync(remark) {
   await syncSharedData()
   const result = createOrderFromCheckout(remark)
 
+  if (result.ok && result.order) {
+    const orderSyncResult = await publishOrderToCloud(result.order)
+    result.orderCloudSynced = orderSyncResult.ok
+    result.orderCloudMessage = orderSyncResult.message || ''
+  }
+
   if (result.ok && result.groupId) {
     const syncResult = await publishGroupChange(result.groupId)
     result.cloudSynced = syncResult.ok
@@ -1245,6 +1438,14 @@ function updateOrderStatus(orderId, status) {
     order.id === orderId ? { ...order, status } : order
   ))
   saveOrdersRaw(orders)
+
+  const order = orders.find((item) => item.id === orderId)
+
+  if (order) {
+    publishOrderToCloud(order).catch((error) => {
+      console.warn('publish order status failed', error)
+    })
+  }
 }
 
 function ensureFavorites() {
@@ -1425,10 +1626,12 @@ module.exports = {
   mock,
   money,
   prepareCloudIdentity,
+  publishOrderToCloud,
   removeCartItem,
   setGroupCheckout,
   setCheckoutItems,
   saveUserAddress,
+  syncCatalogFromCloud,
   syncSharedData,
   toggleAllCartItems,
   toggleCartItem,

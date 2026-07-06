@@ -8,7 +8,8 @@ Page({
     selectedPickupId: ''
   },
 
-  onLoad(options) {
+  async onLoad(options) {
+    await store.syncCatalogFromCloud()
     const product = store.enrichProduct(store.mock.getProduct(options.productId))
 
     this.setData({

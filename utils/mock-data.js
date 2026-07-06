@@ -375,6 +375,12 @@ const pickupPoints = [
   }
 ]
 
+let runtimeCategories = categories
+let runtimeProducts = products
+let runtimeBanners = banners
+let runtimePickupPoints = pickupPoints
+let runtimePickupInfo = pickupInfo
+
 const defaultContact = {
   name: '微信用户',
   phone: '138****8899'
@@ -390,15 +396,15 @@ const defaultUser = {
 }
 
 function getCategory(id) {
-  return categories.find((item) => item.id === id) || categories[0]
+  return runtimeCategories.find((item) => item.id === id) || runtimeCategories[0]
 }
 
 function getProduct(id) {
-  return products.find((item) => item.id === id)
+  return runtimeProducts.find((item) => item.id === id)
 }
 
 function getProductsByCategory(categoryId) {
-  return products.filter((item) => item.categoryId === categoryId)
+  return runtimeProducts.filter((item) => item.categoryId === categoryId)
 }
 
 function searchProducts(keyword) {
@@ -408,7 +414,7 @@ function searchProducts(keyword) {
     return []
   }
 
-  return products.filter((item) => {
+  return runtimeProducts.filter((item) => {
     const category = getCategory(item.categoryId)
     const text = [
       item.name,
@@ -422,17 +428,32 @@ function searchProducts(keyword) {
   })
 }
 
+function setCatalog(data = {}) {
+  runtimeCategories = Array.isArray(data.categories) && data.categories.length ? data.categories : runtimeCategories
+  runtimeProducts = Array.isArray(data.products) && data.products.length ? data.products : runtimeProducts
+  runtimeBanners = Array.isArray(data.banners) && data.banners.length ? data.banners : runtimeBanners
+  runtimePickupPoints = Array.isArray(data.pickupPoints) && data.pickupPoints.length ? data.pickupPoints : runtimePickupPoints
+  runtimePickupInfo = runtimePickupPoints[0] || runtimePickupInfo
+
+  module.exports.categories = runtimeCategories
+  module.exports.products = runtimeProducts
+  module.exports.banners = runtimeBanners
+  module.exports.pickupPoints = runtimePickupPoints
+  module.exports.pickupInfo = runtimePickupInfo
+}
+
 module.exports = {
-  banners,
-  categories,
+  banners: runtimeBanners,
+  categories: runtimeCategories,
   defaultContact,
   defaultUser,
   getCategory,
   getProduct,
   getProductsByCategory,
   orderStatuses,
-  pickupInfo,
-  pickupPoints,
-  products,
-  searchProducts
+  pickupInfo: runtimePickupInfo,
+  pickupPoints: runtimePickupPoints,
+  products: runtimeProducts,
+  searchProducts,
+  setCatalog
 }

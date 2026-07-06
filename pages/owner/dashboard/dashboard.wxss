@@ -1,0 +1,255 @@
+.owner-page {
+  padding: 24rpx 28rpx 48rpx;
+}
+
+.owner-hero {
+  overflow: hidden;
+  padding: 28rpx;
+  color: #fff;
+  border-radius: 16rpx;
+  background:
+    linear-gradient(135deg, rgba(13, 120, 57, 0.98), rgba(30, 203, 58, 0.92)),
+    #0f9f43;
+  box-shadow: 0 18rpx 36rpx rgba(15, 159, 67, 0.18);
+}
+
+.hero-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 24rpx;
+}
+
+.owner-kicker {
+  font-size: 23rpx;
+  font-weight: 800;
+  opacity: 0.84;
+}
+
+.owner-title {
+  margin-top: 8rpx;
+  font-size: 40rpx;
+  font-weight: 900;
+  line-height: 1.18;
+}
+
+.owner-subtitle {
+  margin-top: 12rpx;
+  font-size: 24rpx;
+  line-height: 1.45;
+  opacity: 0.9;
+}
+
+.refresh-btn {
+  flex: none;
+  min-width: 96rpx;
+  height: 58rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #0f9f43;
+  font-size: 24rpx;
+  font-weight: 900;
+  border-radius: 12rpx;
+  background: #fff;
+}
+
+.hero-notice {
+  margin-top: 22rpx;
+  padding: 18rpx;
+  font-size: 24rpx;
+  font-weight: 800;
+  border-radius: 12rpx;
+  background: rgba(255, 255, 255, 0.14);
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12rpx;
+  margin-top: 20rpx;
+}
+
+.stat-card {
+  min-width: 0;
+  min-height: 118rpx;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 8rpx;
+  padding: 16rpx 10rpx;
+  text-align: center;
+  border: 1rpx solid #e5ece7;
+  border-radius: 14rpx;
+  background: #fff;
+}
+
+.stat-card.green {
+  background: #ecfbef;
+}
+
+.stat-card.warm {
+  background: #fff7e8;
+}
+
+.stat-num {
+  color: #1f2b25;
+  font-size: 36rpx;
+  font-weight: 900;
+}
+
+.stat-label {
+  color: #6d7a72;
+  font-size: 22rpx;
+  font-weight: 800;
+}
+
+.owner-actions {
+  display: grid;
+  gap: 16rpx;
+  margin-top: 22rpx;
+}
+
+.owner-action {
+  min-height: 110rpx;
+  display: grid;
+  grid-template-columns: 64rpx 1fr 28rpx;
+  gap: 18rpx;
+  align-items: center;
+  padding: 20rpx 22rpx;
+  border: 1rpx solid #e5ece7;
+  border-radius: 16rpx;
+  background: #fff;
+}
+
+.action-icon {
+  width: 64rpx;
+  height: 64rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #0f9f43;
+  font-size: 28rpx;
+  font-weight: 900;
+  border-radius: 16rpx;
+  background: #e9f9ed;
+}
+
+.action-title {
+  color: #1f2b25;
+  font-size: 29rpx;
+  font-weight: 900;
+}
+
+.action-desc {
+  margin-top: 8rpx;
+  color: #6d7a72;
+  font-size: 23rpx;
+}
+
+.owner-section-head {
+  margin-top: 34rpx;
+}
+
+.owner-list {
+  display: grid;
+  gap: 14rpx;
+}
+
+.product-row {
+  display: grid;
+  grid-template-columns: 104rpx 1fr 80rpx;
+  gap: 18rpx;
+  align-items: center;
+  padding: 18rpx;
+  border: 1rpx solid #e5ece7;
+  border-radius: 16rpx;
+  background: #fff;
+}
+
+.product-thumb {
+  width: 104rpx;
+  height: 104rpx;
+  border-radius: 12rpx;
+}
+
+.product-copy {
+  min-width: 0;
+}
+
+.product-name {
+  color: #1f2b25;
+  font-size: 28rpx;
+  font-weight: 900;
+}
+
+.product-meta,
+.product-status {
+  margin-top: 8rpx;
+  color: #6d7a72;
+  font-size: 22rpx;
+}
+
+.product-status {
+  color: #0f9f43;
+  font-weight: 800;
+}
+
+.product-qty {
+  color: #ef4a45;
+  font-size: 32rpx;
+  font-weight: 900;
+  text-align: right;
+}
+
+.recipient-mini-row {
+  min-height: 96rpx;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18rpx;
+  padding: 18rpx 20rpx;
+  border: 1rpx solid #e5ece7;
+  border-radius: 16rpx;
+  background: #fff;
+}
+
+.recipient-name {
+  color: #1f2b25;
+  font-size: 28rpx;
+  font-weight: 900;
+}
+
+.recipient-goods {
+  margin-top: 8rpx;
+  color: #6d7a72;
+  font-size: 23rpx;
+}
+
+.status-pill {
+  flex: none;
+  height: 44rpx;
+  display: flex;
+  align-items: center;
+  padding: 0 16rpx;
+  color: #0f9f43;
+  font-size: 22rpx;
+  font-weight: 900;
+  border-radius: 10rpx;
+  background: #e9f9ed;
+}
+
+.owner-empty-box {
+  padding: 28rpx;
+  color: #6d7a72;
+  font-size: 24rpx;
+  line-height: 1.6;
+  border: 1rpx dashed #cfe0d4;
+  border-radius: 16rpx;
+  background: #fbfdfb;
+}
+
+.owner-empty-action {
+  width: 240rpx;
+  margin-top: 12rpx;
+}

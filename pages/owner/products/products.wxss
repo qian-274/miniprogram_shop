@@ -1,0 +1,131 @@
+.owner-products-page {
+  padding-bottom: 40rpx;
+}
+
+.status-tabs {
+  white-space: nowrap;
+  padding: 20rpx 0 18rpx 28rpx;
+  background: #fff;
+  border-bottom: 1rpx solid #e5ece7;
+}
+
+.status-tab {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 60rpx;
+  margin-right: 14rpx;
+  padding: 0 24rpx;
+  color: #6d7a72;
+  font-size: 25rpx;
+  font-weight: 800;
+  border-radius: 12rpx;
+  background: #f2f5f1;
+}
+
+.status-tab.active {
+  color: #fff;
+  background: #1ecb3a;
+}
+
+.content {
+  padding: 24rpx 28rpx;
+}
+
+.summary-strip {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20rpx;
+  padding: 24rpx;
+  border: 1rpx solid #d9ecdd;
+  border-radius: 16rpx;
+  background: #ecfbef;
+}
+
+.summary-title {
+  color: #1f2b25;
+  font-size: 30rpx;
+  font-weight: 900;
+}
+
+.summary-copy {
+  margin-top: 10rpx;
+  color: #607269;
+  font-size: 24rpx;
+}
+
+.summary-count {
+  width: 76rpx;
+  height: 76rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-size: 34rpx;
+  font-weight: 900;
+  border-radius: 18rpx;
+  background: #1ecb3a;
+}
+
+.product-list {
+  display: grid;
+  gap: 16rpx;
+  margin-top: 22rpx;
+}
+
+.product-card {
+  display: grid;
+  grid-template-columns: 112rpx 1fr 96rpx;
+  gap: 18rpx;
+  align-items: center;
+  padding: 18rpx;
+  border: 1rpx solid #e5ece7;
+  border-radius: 16rpx;
+  background: #fff;
+}
+
+.product-image {
+  width: 112rpx;
+  height: 112rpx;
+  border-radius: 12rpx;
+}
+
+.product-main {
+  min-width: 0;
+}
+
+.product-title {
+  color: #1f2b25;
+  font-size: 29rpx;
+  font-weight: 900;
+}
+
+.product-spec,
+.product-status {
+  margin-top: 9rpx;
+  color: #6d7a72;
+  font-size: 23rpx;
+}
+
+.product-status {
+  color: #0f9f43;
+  font-weight: 800;
+}
+
+.product-side {
+  text-align: right;
+}
+
+.qty {
+  color: #ef4a45;
+  font-size: 38rpx;
+  font-weight: 900;
+}
+
+.orders {
+  margin-top: 8rpx;
+  color: #6d7a72;
+  font-size: 23rpx;
+  font-weight: 800;
+}

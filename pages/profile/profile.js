@@ -1,8 +1,15 @@
 const store = require('../../utils/store')
+const ownerApi = require('../../utils/owner')
 
 Page({
   data: {
     orderStatuses: [],
+    ownerEntry: {
+      visible: false,
+      pickupName: '',
+      readyOrders: 0,
+      demo: false
+    },
     profileForm: {
       avatarUrl: '',
       nickName: ''
@@ -18,6 +25,7 @@ Page({
   async onShow() {
     await store.syncSharedData()
     this.refreshProfile()
+    await this.refreshOwnerEntry()
   },
 
   refreshProfile() {
@@ -36,6 +44,33 @@ Page({
       },
       showProfileEditor: !user.loggedIn || !user.profileSynced,
       user
+    })
+  },
+
+  async refreshOwnerEntry() {
+    const user = store.getUser()
+
+    if (!user.loggedIn || !user.openid) {
+      this.setData({
+        ownerEntry: {
+          visible: false,
+          pickupName: '',
+          readyOrders: 0,
+          demo: false
+        }
+      })
+      return
+    }
+
+    const result = await ownerApi.getDashboard({ lite: true }, { noFallback: true })
+
+    this.setData({
+      ownerEntry: {
+        visible: !!(result.ok && result.canManage),
+        pickupName: result.pickup ? result.pickup.name : '',
+        readyOrders: result.stats ? result.stats.readyOrders || 0 : 0,
+        demo: !!result.demo
+      }
     })
   },
 
@@ -97,6 +132,7 @@ Page({
     this.setData({
       showProfileEditor: false
     })
+    await this.refreshOwnerEntry()
 
     if (!identity.ok) {
       wx.showModal({
@@ -181,6 +217,24 @@ Page({
 
     wx.navigateTo({
       url: '/pages/feedback/feedback'
+    })
+  },
+
+  goOwner() {
+    if (!this.ensureLogin()) {
+      return
+    }
+
+    if (!this.data.ownerEntry.visible) {
+      wx.showToast({
+        title: '当前账号未绑定自提点',
+        icon: 'none'
+      })
+      return
+    }
+
+    wx.navigateTo({
+      url: '/pages/owner/dashboard/dashboard'
     })
   },
 
