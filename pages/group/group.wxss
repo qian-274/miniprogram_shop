@@ -131,6 +131,12 @@
   background: #1ecb3a;
 }
 
+.member-avatar image {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+}
+
 .member-avatar.empty {
   color: #9aa59e;
   background: #edf2ef;

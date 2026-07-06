@@ -88,6 +88,10 @@
   font-weight: 900;
 }
 
+.missing-address {
+  color: #ef4a45;
+}
+
 .pickup-text {
   margin-top: 8rpx;
   color: #6d7a72;

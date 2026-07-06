@@ -6,7 +6,9 @@ Page({
       items: [],
       totalText: '0.00'
     },
-    contact: null,
+    address: {
+      isComplete: false
+    },
     groupText: '',
     groupTitle: '',
     pickup: null,
@@ -21,6 +23,8 @@ Page({
   loadCheckout() {
     const checkout = store.getCheckoutSummary()
     const firstItem = checkout.items[0] || {}
+    const user = store.getUser()
+    const address = store.getUserAddress()
     const groupTitle = checkout.isGroupOpen
       ? '拼团订单 · 支付并开团'
       : checkout.isGroupJoin
@@ -35,13 +39,19 @@ Page({
 
     this.setData({
       checkout,
-      contact: store.mock.defaultContact,
+      address,
       groupText: checkout.isGroup
         ? `${groupPrefix}${firstItem.groupSizeText || '5 人团'} · 满员后自动进入待发货`
         : '',
       groupTitle,
       pickup: checkout.pickup || store.mock.pickupInfo,
-      user: store.getUser()
+      user
+    })
+  },
+
+  goAddress() {
+    wx.navigateTo({
+      url: '/pages/address/address'
     })
   },
 
@@ -51,7 +61,7 @@ Page({
     })
   },
 
-  submitOrder() {
+  async submitOrder() {
     if (!this.data.checkout.items.length) {
       wx.showToast({
         title: '请先选择商品',
@@ -68,15 +78,47 @@ Page({
         confirmColor: '#1ecb3a',
         success: (res) => {
           if (res.confirm) {
-            store.login()
-            this.loadCheckout()
+            wx.reLaunch({
+              url: '/pages/profile/profile'
+            })
           }
         }
       })
       return
     }
 
-    const result = store.createOrderFromCheckout(this.data.remark)
+    if (!this.data.address || !this.data.address.isComplete) {
+      wx.showModal({
+        title: '需要收货信息',
+        content: '请先填写联系人姓名、电话和收货地址，用于下单确认。',
+        confirmText: '去填写',
+        confirmColor: '#1ecb3a',
+        success: (res) => {
+          if (res.confirm) {
+            this.goAddress()
+          }
+        }
+      })
+      return
+    }
+
+    wx.showLoading({
+      title: '提交中',
+      mask: true
+    })
+
+    let result
+
+    try {
+      result = await store.createOrderFromCheckoutAsync(this.data.remark)
+    } catch (error) {
+      result = {
+        ok: false,
+        message: '提交失败，请稍后重试'
+      }
+    } finally {
+      wx.hideLoading()
+    }
 
     if (!result.ok) {
       wx.showToast({
@@ -89,12 +131,15 @@ Page({
     if (this.data.checkout.isGroup) {
       const groupSize = result.order && result.order.group ? result.order.group.groupSize : 5
       const isOpen = result.type === 'group_open'
+      const cloudTip = result.cloudSynced === false
+        ? '\n\n云端同步未完成，请稍后重试或检查云开发权限。'
+        : ''
 
       wx.showModal({
         title: result.completed ? '拼团已成' : (isOpen ? '开团成功' : '参团成功'),
         content: result.completed
-          ? `拼团已满 ${groupSize} 人，订单已进入待发货。`
-          : `已按拼团价支付，满 ${groupSize} 人后订单自动进入待发货。`,
+          ? `拼团已满 ${groupSize} 人，订单已进入待发货。${cloudTip}`
+          : `已按拼团价支付，满 ${groupSize} 人后订单自动进入待发货。${cloudTip}`,
         confirmText: result.completed ? '查看订单' : '查看拼团',
         cancelText: '回到首页',
         confirmColor: '#1ecb3a',

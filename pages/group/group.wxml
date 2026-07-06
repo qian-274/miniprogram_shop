@@ -25,7 +25,10 @@
     </view>
     <block wx:for="{{group.progressSlots}}" wx:key="index">
       <view class="member-row">
-        <view class="member-avatar {{item.filled ? '' : 'empty'}}">{{item.text}}</view>
+        <view class="member-avatar {{item.filled ? '' : 'empty'}}">
+          <image wx:if="{{item.avatarUrl}}" src="{{item.avatarUrl}}" mode="aspectFill" />
+          <text wx:else>{{item.text}}</text>
+        </view>
         <view class="member-name">{{item.name}}</view>
         <view class="member-state">{{item.filled ? '已支付' : '空位'}}</view>
       </view>

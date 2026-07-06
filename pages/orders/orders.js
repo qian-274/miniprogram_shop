@@ -18,7 +18,8 @@ Page({
     })
   },
 
-  onShow() {
+  async onShow() {
+    await store.syncSharedData()
     this.loadOrders()
   },
 

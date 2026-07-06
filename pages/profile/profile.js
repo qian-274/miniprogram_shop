@@ -3,6 +3,11 @@ const store = require('../../utils/store')
 Page({
   data: {
     orderStatuses: [],
+    profileForm: {
+      avatarUrl: '',
+      nickName: ''
+    },
+    showProfileEditor: false,
     user: {
       loggedIn: false,
       nickName: '未登录用户',
@@ -10,11 +15,13 @@ Page({
     }
   },
 
-  onShow() {
+  async onShow() {
+    await store.syncSharedData()
     this.refreshProfile()
   },
 
   refreshProfile() {
+    const user = store.getUser()
     const counts = store.getOrderCounts()
     const orderStatuses = store.mock.orderStatuses.map((item) => ({
       ...item,
@@ -23,15 +30,86 @@ Page({
 
     this.setData({
       orderStatuses,
-      user: store.getUser()
+      profileForm: {
+        avatarUrl: this.data.profileForm.avatarUrl || user.avatarUrl || '',
+        nickName: this.data.profileForm.nickName || (user.profileSynced ? user.nickName : '')
+      },
+      showProfileEditor: !user.loggedIn || !user.profileSynced,
+      user
     })
   },
 
   login() {
-    store.login()
+    this.setData({
+      showProfileEditor: true
+    })
+  },
+
+  editProfile() {
+    this.setData({
+      profileForm: {
+        avatarUrl: this.data.user.avatarUrl || '',
+        nickName: this.data.user.profileSynced ? this.data.user.nickName : ''
+      },
+      showProfileEditor: true
+    })
+  },
+
+  onChooseAvatar(event) {
+    this.setData({
+      'profileForm.avatarUrl': event.detail.avatarUrl
+    })
+  },
+
+  onNicknameInput(event) {
+    this.setData({
+      'profileForm.nickName': event.detail.value
+    })
+  },
+
+  async saveWechatProfile() {
+    const nickName = String(this.data.profileForm.nickName || '').trim()
+
+    if (!nickName) {
+      wx.showToast({
+        title: '请输入微信昵称',
+        icon: 'none'
+      })
+      return
+    }
+
+    wx.showLoading({
+      title: '登录中',
+      mask: true
+    })
+    const identity = await store.prepareCloudIdentity()
+    if (identity.ok) {
+      await store.syncSharedData()
+    }
+    wx.hideLoading()
+
+    store.loginWithProfile({
+      nickName,
+      avatarUrl: this.data.profileForm.avatarUrl,
+      openid: identity.ok ? identity.openid : ''
+    })
     this.refreshProfile()
+    this.setData({
+      showProfileEditor: false
+    })
+
+    if (!identity.ok) {
+      wx.showModal({
+        title: '云端身份未就绪',
+        content: identity.message,
+        showCancel: false,
+        confirmColor: '#1ecb3a'
+      })
+      return
+    }
+
     wx.showToast({
-      title: '登录成功',
+      title: '资料已同步',
       icon: 'success'
     })
   },
@@ -48,7 +126,9 @@ Page({
       confirmColor: '#1ecb3a',
       success: (res) => {
         if (res.confirm) {
-          this.login()
+          this.setData({
+            showProfileEditor: true
+          })
         }
       }
     })
@@ -75,6 +155,16 @@ Page({
 
     wx.navigateTo({
       url: '/pages/favorites/favorites'
+    })
+  },
+
+  goAddress() {
+    if (!this.ensureLogin()) {
+      return
+    }
+
+    wx.navigateTo({
+      url: '/pages/address/address'
     })
   },
 

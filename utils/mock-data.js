@@ -376,15 +376,17 @@ const pickupPoints = [
 ]
 
 const defaultContact = {
-  name: '小刘',
+  name: '微信用户',
   phone: '138****8899'
 }
 
 const defaultUser = {
-  id: 'user_self',
-  loggedIn: true,
-  nickName: '小刘',
-  avatarText: '刘'
+  id: '',
+  loggedIn: false,
+  nickName: '未登录用户',
+  avatarText: '访',
+  avatarUrl: '',
+  profileSynced: false
 }
 
 function getCategory(id) {

@@ -35,7 +35,10 @@
       <block wx:if="{{groups.length}}">
         <block wx:for="{{groups}}" wx:key="id">
           <view class="group-row {{highlightedGroupId == item.id ? 'highlight' : ''}}">
-            <view class="group-avatar">{{item.leaderAvatarText}}</view>
+            <view class="group-avatar">
+              <image wx:if="{{item.leaderAvatarUrl}}" src="{{item.leaderAvatarUrl}}" mode="aspectFill" />
+              <text wx:else>{{item.leaderAvatarText}}</text>
+            </view>
             <view class="group-copy" data-id="{{item.id}}" bindtap="goGroup">
               <view class="group-name">{{item.leaderLabel}}</view>
               <view class="group-desc">{{item.remainingText}} · {{item.pickup.name}}</view>

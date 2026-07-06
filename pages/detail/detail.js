@@ -19,11 +19,20 @@ Page({
 
   onShow() {
     if (this.data.product) {
-      this.loadGroups()
+      this.refreshGroups()
+      this.startSyncTimer()
       this.setData({
         isFavorite: store.isFavorite(this.data.product.id)
       })
     }
+  },
+
+  onHide() {
+    this.stopSyncTimer()
+  },
+
+  onUnload() {
+    this.stopSyncTimer()
   },
 
   loadProduct(id) {
@@ -44,7 +53,26 @@ Page({
       product,
       quantity: 1
     })
+    this.refreshGroups()
+  },
+
+  async refreshGroups() {
+    await store.syncSharedData()
     this.loadGroups()
+  },
+
+  startSyncTimer() {
+    this.stopSyncTimer()
+    this.syncTimer = setInterval(() => {
+      this.refreshGroups()
+    }, 5000)
+  },
+
+  stopSyncTimer() {
+    if (this.syncTimer) {
+      clearInterval(this.syncTimer)
+      this.syncTimer = null
+    }
   },
 
   loadGroups() {
@@ -139,7 +167,9 @@ Page({
         confirmColor: '#1ecb3a',
         success: (res) => {
           if (res.confirm) {
-            store.login()
+            wx.reLaunch({
+              url: '/pages/profile/profile'
+            })
           }
         }
       })

@@ -12,8 +12,18 @@ Page({
     })
   },
 
-  onShow() {
+  async onShow() {
+    await store.syncSharedData()
     this.loadGroup()
+    this.startSyncTimer()
+  },
+
+  onHide() {
+    this.stopSyncTimer()
+  },
+
+  onUnload() {
+    this.stopSyncTimer()
   },
 
   loadGroup() {
@@ -31,6 +41,21 @@ Page({
     })
 
     this.setData({ group })
+  },
+
+  startSyncTimer() {
+    this.stopSyncTimer()
+    this.syncTimer = setInterval(async () => {
+      await store.syncSharedData()
+      this.loadGroup()
+    }, 5000)
+  },
+
+  stopSyncTimer() {
+    if (this.syncTimer) {
+      clearInterval(this.syncTimer)
+      this.syncTimer = null
+    }
   },
 
   goDetail() {

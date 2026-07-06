@@ -10,7 +10,14 @@ const GROUPS_INIT_KEY = 'fresh_groups_initialized'
 const ORDERS_KEY = 'fresh_orders'
 const ORDERS_INIT_KEY = 'fresh_orders_initialized'
 const USER_KEY = 'fresh_user'
+const USER_ID_KEY = 'fresh_user_id'
+const USER_OPENID_KEY = 'fresh_user_openid'
+const ADDRESS_KEY = 'fresh_user_addresses'
 const FEEDBACK_KEY = 'fresh_feedback'
+const CLOUD_GROUPS_COLLECTION = 'fresh_groups'
+const CLOUD_GROUP_MEMBERS_COLLECTION = 'fresh_group_members'
+const LEGACY_DEMO_GROUP_IDS = ['GRP20260705001', 'GRP20260705002']
+const LEGACY_DEMO_ORDER_IDS = ['ORD20260705001', 'ORD20260704002', 'ORD20260703006']
 
 function money(value) {
   return Number(value || 0).toFixed(2)
@@ -23,6 +30,114 @@ function getStorage(key, fallback) {
 
 function setStorage(key, value) {
   wx.setStorageSync(key, value)
+}
+
+function randomId(prefix) {
+  return `${prefix}_${Date.now()}_${Math.random().toString(16).slice(2, 8)}`
+}
+
+function getCloudUserId(openid) {
+  return openid ? `openid:${openid}` : ''
+}
+
+function getClientUserId() {
+  const openid = getStorage(USER_OPENID_KEY, '')
+
+  if (openid) {
+    return getCloudUserId(openid)
+  }
+
+  const existing = getStorage(USER_ID_KEY, '')
+
+  if (existing) {
+    return existing
+  }
+
+  const id = randomId('wx_user')
+  setStorage(USER_ID_KEY, id)
+  return id
+}
+
+function getAvatarText(nickName) {
+  const text = String(nickName || '').trim()
+  return text ? text.slice(0, 1) : '微'
+}
+
+async function fetchCloudIdentity() {
+  if (!canUseCloud() || !wx.cloud.callFunction) {
+    return null
+  }
+
+  try {
+    const result = await wx.cloud.callFunction({
+      name: 'getOpenId'
+    })
+    const identity = result && result.result ? result.result : {}
+
+    if (!identity.openid) {
+      return null
+    }
+
+    setStorage(USER_OPENID_KEY, identity.openid)
+    setStorage(USER_ID_KEY, getCloudUserId(identity.openid))
+
+    return {
+      openid: identity.openid,
+      appid: identity.appid || '',
+      unionid: identity.unionid || '',
+      userId: getCloudUserId(identity.openid)
+    }
+  } catch (error) {
+    console.warn('fetchCloudIdentity failed', error)
+    return null
+  }
+}
+
+async function prepareCloudIdentity() {
+  const current = getUser()
+  const identity = await fetchCloudIdentity()
+
+  if (!identity) {
+    return {
+      ok: false,
+      userId: current.id,
+      message: '云端身份未就绪，请确认 getOpenId 云函数已部署'
+    }
+  }
+
+  if (current.id && current.id !== identity.userId) {
+    migrateAddressReference(current.id, identity.userId)
+    migrateUserReferences(current.id, {
+      ...current,
+      id: identity.userId,
+      openid: identity.openid
+    })
+  }
+
+  return {
+    ok: true,
+    ...identity
+  }
+}
+
+function normalizeUser(user) {
+  const openid = getStorage(USER_OPENID_KEY, '')
+  const fallback = {
+    ...mock.defaultUser,
+    id: getClientUserId(),
+    openid
+  }
+  const next = {
+    ...fallback,
+    ...(user || {})
+  }
+
+  return {
+    ...next,
+    openid: next.openid || openid,
+    avatarText: next.avatarText || getAvatarText(next.nickName),
+    profileSynced: !!next.profileSynced
+  }
 }
 
 function pad(value) {
@@ -63,6 +178,60 @@ function getPickupPoint(pickupId) {
 
 function getCurrentUser() {
   return getUser()
+}
+
+function normalizeAddress(address = {}) {
+  const name = String(address.name || '').trim()
+  const phone = String(address.phone || '').trim()
+  const detail = String(address.detail || address.address || '').trim()
+
+  return {
+    name,
+    phone,
+    detail,
+    address: detail,
+    isComplete: !!(name && phone && detail)
+  }
+}
+
+function getAddressBook() {
+  return getStorage(ADDRESS_KEY, {})
+}
+
+function migrateAddressReference(fromId, toId) {
+  if (!fromId || !toId || fromId === toId) {
+    return
+  }
+
+  const book = getAddressBook()
+
+  if (!book[fromId]) {
+    return
+  }
+
+  setStorage(ADDRESS_KEY, {
+    ...book,
+    [toId]: book[toId] || book[fromId]
+  })
+}
+
+function getUserAddress() {
+  const user = getCurrentUser()
+  const book = getAddressBook()
+
+  return normalizeAddress(book[user.id] || {})
+}
+
+function saveUserAddress(address) {
+  const user = getCurrentUser()
+  const normalized = normalizeAddress(address)
+  const book = {
+    ...getAddressBook(),
+    [user.id]: normalized
+  }
+
+  setStorage(ADDRESS_KEY, book)
+  return normalized
 }
 
 function addHours(date, hours) {
@@ -118,52 +287,80 @@ function enrichProducts(products) {
 
 function ensureGroups() {
   if (!getStorage(GROUPS_INIT_KEY, false)) {
-    setStorage(GROUPS_KEY, [
-      {
-        id: 'GRP20260705001',
-        productId: 'orange',
-        leaderId: 'user_hua',
-        pickupId: 'happy',
-        groupPrice: 18.8,
-        groupSize: 5,
-        status: 'active',
-        createdAt: '2026-07-05 10:20',
-        expiresAt: '2026-07-06 10:20',
-        members: [
-          { userId: 'user_hua', nickName: '华神', avatarText: '华', paid: true, joinedAt: '2026-07-05 10:20' },
-          { userId: 'user_keke', nickName: 'keke可口', avatarText: '橘', paid: true, joinedAt: '2026-07-05 10:34' }
-        ]
-      },
-      {
-        id: 'GRP20260705002',
-        productId: 'grape',
-        leaderId: 'user_self',
-        pickupId: 'happy',
-        groupPrice: 19.9,
-        groupSize: 5,
-        status: 'active',
-        createdAt: '2026-07-05 11:08',
-        expiresAt: '2026-07-06 11:08',
-        members: [
-          { userId: 'user_self', nickName: '小刘', avatarText: '刘', paid: true, joinedAt: '2026-07-05 11:08' }
-        ]
-      }
-    ])
+    setStorage(GROUPS_KEY, [])
     setStorage(GROUPS_INIT_KEY, true)
   }
 }
 
+function filterLegacyDemoGroups(groups) {
+  return (groups || []).filter((group) => (
+    group
+    && !LEGACY_DEMO_GROUP_IDS.includes(group.id)
+    && group.leaderId !== 'user_self'
+    && !(group.members || []).some((member) => member.userId === 'user_self')
+  ))
+}
+
 function getGroupsRaw() {
   ensureGroups()
-  return getStorage(GROUPS_KEY, [])
+  const groups = getStorage(GROUPS_KEY, [])
+  const filtered = filterLegacyDemoGroups(groups)
+
+  if (filtered.length !== groups.length) {
+    saveGroupsRaw(filtered)
+  }
+
+  return filtered
 }
 
 function saveGroupsRaw(groups) {
   setStorage(GROUPS_KEY, groups)
 }
 
+function getGroupRawById(groupId) {
+  return getGroupsRaw().find((group) => group.id === groupId)
+}
+
 function getPaidMembers(group) {
   return (group.members || []).filter((member) => member.paid !== false)
+}
+
+function normalizeMember(member) {
+  if (!member || !member.userId) {
+    return null
+  }
+
+  return {
+    userId: member.userId,
+    nickName: member.nickName || '微信用户',
+    avatarText: member.avatarText || getAvatarText(member.nickName),
+    avatarUrl: member.avatarUrl || '',
+    paid: member.paid !== false,
+    orderId: member.orderId || '',
+    joinedAt: member.joinedAt || ''
+  }
+}
+
+function mergeMembers(...memberLists) {
+  const memberMap = {}
+
+  memberLists.flat().forEach((member) => {
+    const normalized = normalizeMember(member)
+
+    if (!normalized) {
+      return
+    }
+
+    const current = memberMap[normalized.userId] || {}
+    memberMap[normalized.userId] = {
+      ...current,
+      ...normalized,
+      avatarUrl: normalized.avatarUrl || current.avatarUrl || '',
+      orderId: normalized.orderId || current.orderId || ''
+    }
+  })
+
+  return Object.values(memberMap)
 }
 
 function getGroupStatus(group) {
@@ -190,6 +387,7 @@ function buildProgressSlots(group) {
     slots.push({
       filled: !!member,
       text: member ? (member.avatarText || member.nickName.slice(0, 1)) : `+${index - members.length + 1}`,
+      avatarUrl: member ? member.avatarUrl || '' : '',
       name: member ? member.nickName : '待邀请'
     })
   }
@@ -225,7 +423,9 @@ function enrichGroup(group) {
     isMember,
     leader,
     leaderName,
+    groupSize,
     leaderAvatarText: leader.avatarText || leaderName.slice(0, 1),
+    leaderAvatarUrl: leader.avatarUrl || '',
     leaderLabel: `${leaderName}${isMine ? '（我的团）' : ''}`,
     memberCount,
     remaining,
@@ -265,6 +465,255 @@ function completeGroupIfReady(group, orders) {
   })
 
   return true
+}
+
+function canUseCloud() {
+  return typeof wx !== 'undefined' && wx.cloud && wx.cloud.database
+}
+
+function getCloudDb() {
+  return canUseCloud() ? wx.cloud.database() : null
+}
+
+function sanitizeGroupForCloud(group) {
+  const members = mergeMembers(group.members || [])
+
+  return {
+    id: group.id,
+    productId: group.productId,
+    leaderId: group.leaderId,
+    pickupId: group.pickupId,
+    groupPrice: group.groupPrice,
+    groupSize: group.groupSize || 5,
+    status: group.status || 'active',
+    createdAt: group.createdAt,
+    expiresAt: group.expiresAt || '',
+    completedAt: group.completedAt || '',
+    members,
+    updatedAt: formatTime(new Date())
+  }
+}
+
+function sanitizeMemberForCloud(group, member) {
+  const normalized = normalizeMember(member)
+
+  if (!normalized) {
+    return null
+  }
+
+  return {
+    id: `${group.id}_${normalized.userId}`,
+    groupId: group.id,
+    ...normalized,
+    updatedAt: formatTime(new Date())
+  }
+}
+
+function normalizeRemoteMember(member) {
+  const openid = member && member._openid
+  const userId = openid ? getCloudUserId(openid) : member.userId
+
+  return {
+    ...member,
+    userId
+  }
+}
+
+function normalizeRemoteGroup(group, memberDocs) {
+  const openid = group && group._openid
+  const leaderId = openid ? getCloudUserId(openid) : group.leaderId
+  const members = mergeMembers(
+    (group.members || []).map((member) => (
+      member.userId === group.leaderId && openid
+        ? { ...member, userId: leaderId }
+        : member
+    )),
+    (memberDocs || []).map(normalizeRemoteMember)
+  )
+
+  return {
+    ...group,
+    id: group.id || group._id,
+    leaderId,
+    members
+  }
+}
+
+function mergeGroups(localGroups, remoteGroups) {
+  const groupMap = {}
+
+  ;[...filterLegacyDemoGroups(localGroups), ...filterLegacyDemoGroups(remoteGroups)].forEach((group) => {
+    if (!group || !group.id) {
+      return
+    }
+
+    const current = groupMap[group.id]
+
+    if (!current) {
+      groupMap[group.id] = {
+        ...group,
+        members: mergeMembers(group.members || [])
+      }
+      return
+    }
+
+    const members = mergeMembers(current.members || [], group.members || [])
+    const groupSize = group.groupSize || current.groupSize || 5
+    groupMap[group.id] = {
+      ...current,
+      ...group,
+      groupSize,
+      status: current.status === 'completed' || group.status === 'completed' || getPaidMembers({ members }).length >= groupSize
+        ? 'completed'
+        : (group.status || current.status || 'active'),
+      members
+    }
+  })
+
+  return Object.values(groupMap).sort((left, right) => String(right.createdAt).localeCompare(String(left.createdAt)))
+}
+
+function reconcileOrdersWithGroups(groups) {
+  const orders = getOrdersRaw()
+  let changed = false
+
+  orders.forEach((order) => {
+    if (order.status !== 'pending_group' || !order.groupId) {
+      return
+    }
+
+    const group = groups.find((item) => item.id === order.groupId)
+
+    if (group && getGroupStatus(group) === 'completed') {
+      order.status = 'pending_ship'
+      changed = true
+    }
+  })
+
+  if (changed) {
+    saveOrdersRaw(orders)
+  }
+}
+
+async function getCloudCollectionData(collectionName) {
+  const db = getCloudDb()
+
+  if (!db) {
+    return []
+  }
+
+  const result = await db.collection(collectionName).limit(100).get()
+  return result.data || []
+}
+
+async function safeGetCloudCollectionData(collectionName) {
+  try {
+    return await getCloudCollectionData(collectionName)
+  } catch (error) {
+    return []
+  }
+}
+
+async function syncGroupsFromCloud() {
+  if (!canUseCloud()) {
+    return false
+  }
+
+  try {
+    const [remoteGroupDocs, remoteMemberDocs] = await Promise.all([
+      safeGetCloudCollectionData(CLOUD_GROUPS_COLLECTION),
+      safeGetCloudCollectionData(CLOUD_GROUP_MEMBERS_COLLECTION)
+    ])
+
+    if (!remoteGroupDocs.length && !remoteMemberDocs.length) {
+      return false
+    }
+
+    const membersByGroup = remoteMemberDocs.reduce((result, member) => {
+      if (!member.groupId) {
+        return result
+      }
+
+      result[member.groupId] = result[member.groupId] || []
+      result[member.groupId].push(member)
+      return result
+    }, {})
+    const remoteGroups = remoteGroupDocs.map((group) => normalizeRemoteGroup(
+      group,
+      membersByGroup[group.id || group._id] || []
+    ))
+    const merged = mergeGroups(getGroupsRaw(), remoteGroups)
+
+    saveGroupsRaw(merged)
+    reconcileOrdersWithGroups(merged)
+    return true
+  } catch (error) {
+    console.warn('syncGroupsFromCloud failed', error)
+    return false
+  }
+}
+
+async function saveCloudDoc(collectionName, docId, data) {
+  const db = getCloudDb()
+
+  if (!db || !docId) {
+    return { ok: false, message: '云开发未初始化' }
+  }
+
+  try {
+    await db.collection(collectionName).doc(docId).set({
+      data
+    })
+    return { ok: true }
+  } catch (error) {
+    console.warn(`saveCloudDoc ${collectionName} failed`, error)
+    return {
+      ok: false,
+      message: error && (error.errMsg || error.message) ? (error.errMsg || error.message) : '云端写入失败'
+    }
+  }
+}
+
+async function publishGroupChange(groupId) {
+  if (!canUseCloud()) {
+    return { ok: false, message: '云开发未初始化' }
+  }
+
+  const group = getGroupRawById(groupId)
+  const user = getCurrentUser()
+
+  if (!group) {
+    return { ok: false, message: '拼团不存在' }
+  }
+
+  const member = (group.members || []).find((item) => item.userId === user.id)
+  const tasks = []
+
+  if (group.leaderId === user.id) {
+    tasks.push(saveCloudDoc(CLOUD_GROUPS_COLLECTION, group.id, sanitizeGroupForCloud(group)))
+  }
+
+  const memberDoc = sanitizeMemberForCloud(group, member)
+
+  if (memberDoc) {
+    tasks.push(saveCloudDoc(CLOUD_GROUP_MEMBERS_COLLECTION, memberDoc.id, memberDoc))
+  }
+
+  if (!tasks.length) {
+    return { ok: false, message: '没有需要同步的拼团数据' }
+  }
+
+  const results = await Promise.all(tasks)
+  const failed = results.find((item) => !item.ok)
+
+  return {
+    ok: results.some((item) => item.ok),
+    message: failed ? failed.message : ''
+  }
+}
+
+function syncSharedData() {
+  return syncGroupsFromCloud()
 }
 
 function enrichCartItem(item) {
@@ -502,47 +951,25 @@ function getCheckoutSummary() {
 
 function ensureOrders() {
   if (!getStorage(ORDERS_INIT_KEY, false)) {
-    setStorage(ORDERS_KEY, [
-      {
-        id: 'ORD20260705001',
-        status: 'pending_receive',
-        time: '2026-07-05 09:30',
-        pickup: mock.pickupInfo.name,
-        remark: '晚一点来取，麻烦留货。',
-        items: [
-          { productId: 'greens', quantity: 1, price: 19.9 },
-          { productId: 'milk', quantity: 2, price: 16.8 }
-        ]
-      },
-      {
-        id: 'ORD20260704002',
-        status: 'pending_comment',
-        time: '2026-07-04 18:20',
-        pickup: mock.pickupInfo.name,
-        remark: '',
-        items: [
-          { productId: 'banana', quantity: 1, price: 18.9 }
-        ]
-      },
-      {
-        id: 'ORD20260703006',
-        status: 'completed',
-        time: '2026-07-03 17:12',
-        pickup: mock.pickupInfo.name,
-        remark: '',
-        items: [
-          { productId: 'tomato', quantity: 2, price: 15.8 },
-          { productId: 'oats', quantity: 1, price: 28.8 }
-        ]
-      }
-    ])
+    setStorage(ORDERS_KEY, [])
     setStorage(ORDERS_INIT_KEY, true)
   }
 }
 
+function filterLegacyDemoOrders(orders) {
+  return (orders || []).filter((order) => order && !LEGACY_DEMO_ORDER_IDS.includes(order.id))
+}
+
 function getOrdersRaw() {
   ensureOrders()
-  return getStorage(ORDERS_KEY, [])
+  const orders = getStorage(ORDERS_KEY, [])
+  const filtered = filterLegacyDemoOrders(orders)
+
+  if (filtered.length !== orders.length) {
+    saveOrdersRaw(filtered)
+  }
+
+  return filtered
 }
 
 function saveOrdersRaw(orders) {
@@ -585,14 +1012,55 @@ function enrichOrder(order) {
   }
 }
 
+function buildVirtualGroupOrders(existingOrders) {
+  const orderGroupIds = existingOrders
+    .filter((order) => order.groupId)
+    .map((order) => order.groupId)
+
+  return getGroupsRaw()
+    .map(enrichGroup)
+    .filter((group) => group && group.isMember && !orderGroupIds.includes(group.id))
+    .map((group) => {
+      const user = getCurrentUser()
+      const member = (group.members || []).find((item) => item.userId === user.id) || {}
+      const status = group.status === 'completed' ? 'pending_ship' : 'pending_group'
+
+      return {
+        id: `GRPORDER${group.id}`,
+        status,
+        time: member.joinedAt || group.createdAt,
+        pickup: group.pickup.name,
+        pickupId: group.pickup.id,
+        remark: '',
+        isGroup: true,
+        virtual: true,
+        groupId: group.id,
+        groupRole: group.isMine ? 'leader' : 'member',
+        items: [
+          {
+            productId: group.productId,
+            quantity: 1,
+            price: Number(group.groupPrice || (group.product && group.product.groupPrice) || 0),
+            groupPrice: Number(group.groupPrice || (group.product && group.product.groupPrice) || 0)
+          }
+        ]
+      }
+    })
+}
+
+function getCombinedOrdersRaw() {
+  const orders = getOrdersRaw()
+  return orders.concat(buildVirtualGroupOrders(orders))
+}
+
 function getOrders(status) {
-  return getOrdersRaw()
+  return getCombinedOrdersRaw()
     .filter((order) => !status || order.status === status)
     .map(enrichOrder)
 }
 
 function getOrderCounts() {
-  const orders = getOrdersRaw()
+  const orders = getCombinedOrdersRaw()
   return mock.orderStatuses.reduce((result, status) => {
     result[status.key] = orders.filter((order) => order.status === status.key).length
     return result
@@ -608,6 +1076,11 @@ function createOrderFromCheckout(remark) {
 
   const rawCheckout = getStorage(CHECKOUT_KEY, { source: 'cart', items: [] })
   const user = getCurrentUser()
+  const address = getUserAddress()
+
+  if (!address.isComplete) {
+    return { ok: false, message: '请先完善我的地址' }
+  }
 
   if (checkout.isGroup) {
     const product = mock.getProduct(checkout.items[0].productId)
@@ -625,6 +1098,11 @@ function createOrderFromCheckout(remark) {
       time: formatTime(new Date()),
       pickup: pickup.name,
       pickupId: pickup.id,
+      contact: {
+        name: address.name,
+        phone: address.phone,
+        address: address.detail
+      },
       remark: remark || '',
       isGroup: true,
       groupId: '',
@@ -666,6 +1144,7 @@ function createOrderFromCheckout(remark) {
         userId: user.id,
         nickName: user.nickName,
         avatarText: user.avatarText,
+        avatarUrl: user.avatarUrl || '',
         paid: true,
         orderId: order.id,
         joinedAt: order.time
@@ -688,6 +1167,7 @@ function createOrderFromCheckout(remark) {
             userId: user.id,
             nickName: user.nickName,
             avatarText: user.avatarText,
+            avatarUrl: user.avatarUrl || '',
             paid: true,
             orderId: order.id,
             joinedAt: order.time
@@ -717,6 +1197,11 @@ function createOrderFromCheckout(remark) {
     status: 'pending_ship',
     time: formatTime(new Date()),
     pickup: mock.pickupInfo.name,
+    contact: {
+      name: address.name,
+      phone: address.phone,
+      address: address.detail
+    },
     remark: remark || '',
     items: checkout.items.map((item) => ({
       productId: item.productId,
@@ -734,6 +1219,25 @@ function createOrderFromCheckout(remark) {
 
   wx.removeStorageSync(CHECKOUT_KEY)
   return { ok: true, order: enrichOrder(order) }
+}
+
+async function createOrderFromCheckoutAsync(remark) {
+  const user = getUser()
+
+  if (user.loggedIn && !user.openid) {
+    await prepareCloudIdentity()
+  }
+
+  await syncSharedData()
+  const result = createOrderFromCheckout(remark)
+
+  if (result.ok && result.groupId) {
+    const syncResult = await publishGroupChange(result.groupId)
+    result.cloudSynced = syncResult.ok
+    result.cloudMessage = syncResult.message || ''
+  }
+
+  return result
 }
 
 function updateOrderStatus(orderId, status) {
@@ -772,20 +1276,117 @@ function toggleFavorite(productId) {
   return !exists
 }
 
+function migrateUserReferences(fromId, user) {
+  if (!fromId || !user) {
+    return []
+  }
+
+  const matchIds = [fromId, user.id].filter(Boolean)
+  const affectedGroupIds = []
+  const groups = getGroupsRaw().map((group) => {
+    let changed = false
+    const members = (group.members || []).map((member) => {
+      if (!matchIds.includes(member.userId)) {
+        return member
+      }
+
+      changed = true
+      return {
+        ...member,
+        userId: user.id,
+        nickName: user.nickName,
+        avatarText: user.avatarText,
+        avatarUrl: user.avatarUrl || member.avatarUrl || ''
+      }
+    })
+    const leaderChanged = group.leaderId === fromId
+
+    if (changed || leaderChanged) {
+      affectedGroupIds.push(group.id)
+    }
+
+    return {
+      ...group,
+      leaderId: group.leaderId === fromId ? user.id : group.leaderId,
+      members
+    }
+  })
+
+  if (affectedGroupIds.length) {
+    saveGroupsRaw(groups)
+  }
+
+  return affectedGroupIds
+}
+
 function getUser() {
-  return getStorage(USER_KEY, mock.defaultUser)
+  return normalizeUser(getStorage(USER_KEY, null))
 }
 
 function login() {
-  setStorage(USER_KEY, mock.defaultUser)
-  return mock.defaultUser
+  const id = getClientUserId()
+  const nickName = `微信用户${id.slice(-4)}`
+  const user = {
+    id,
+    openid: getStorage(USER_OPENID_KEY, ''),
+    loggedIn: true,
+    nickName,
+    avatarText: getAvatarText(nickName),
+    avatarUrl: '',
+    profileSynced: false
+  }
+
+  setStorage(USER_KEY, user)
+  return user
+}
+
+function loginWithProfile(profile = {}) {
+  const current = getUser()
+  const openid = profile.openid || getStorage(USER_OPENID_KEY, '')
+  const cloudUserId = getCloudUserId(openid)
+  const shouldReplaceLegacyId = current.id === 'user_self' && !current.profileSynced
+  const id = shouldReplaceLegacyId ? getClientUserId() : (current.id || getClientUserId())
+  const nextId = cloudUserId || id
+  const nickName = String(profile.nickName || current.nickName || '微信用户').trim()
+  const user = {
+    id: nextId,
+    openid,
+    loggedIn: true,
+    nickName,
+    avatarUrl: profile.avatarUrl || current.avatarUrl || '',
+    avatarText: getAvatarText(nickName),
+    profileSynced: true
+  }
+
+  setStorage(USER_KEY, user)
+  if (openid) {
+    setStorage(USER_OPENID_KEY, openid)
+    setStorage(USER_ID_KEY, nextId)
+  }
+  migrateAddressReference(current.id, user.id)
+  migrateUserReferences(current.id, user)
+  const syncTasks = getGroupsRaw()
+    .filter((group) => (group.members || []).some((member) => member.userId === user.id))
+    .map((group) => publishGroupChange(group.id))
+
+  if (syncTasks.length) {
+    Promise.all(syncTasks).catch((error) => {
+      console.warn('sync profile to groups failed', error)
+    })
+  }
+
+  return user
 }
 
 function logout() {
   const guest = {
+    id: getClientUserId(),
+    openid: getStorage(USER_OPENID_KEY, ''),
     loggedIn: false,
     nickName: '未登录用户',
-    avatarText: '访'
+    avatarText: '访',
+    avatarUrl: '',
+    profileSynced: false
   }
   setStorage(USER_KEY, guest)
   return guest
@@ -804,6 +1405,7 @@ module.exports = {
   addFeedback,
   addToCart,
   createOrderFromCheckout,
+  createOrderFromCheckoutAsync,
   enrichProduct,
   enrichProducts,
   getCartSummary,
@@ -813,16 +1415,21 @@ module.exports = {
   getOrderCounts,
   getOrders,
   getPickupPoint,
+  getUserAddress,
   getVisibleGroups,
   getUser,
   isFavorite,
   login,
+  loginWithProfile,
   logout,
   mock,
   money,
+  prepareCloudIdentity,
   removeCartItem,
   setGroupCheckout,
   setCheckoutItems,
+  saveUserAddress,
+  syncSharedData,
   toggleAllCartItems,
   toggleCartItem,
   toggleFavorite,

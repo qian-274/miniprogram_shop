@@ -28,6 +28,12 @@
   box-shadow: 0 18rpx 34rpx rgba(30, 203, 58, 0.22);
 }
 
+.avatar-image {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+}
+
 .profile-name {
   color: #1f2b25;
   font-size: 34rpx;
@@ -43,6 +49,105 @@
   width: 260rpx;
   min-height: 72rpx;
   margin-top: 4rpx;
+}
+
+.wechat-panel {
+  margin-top: 22rpx;
+  overflow: hidden;
+  border: 1rpx solid #e5ece7;
+  border-radius: 16rpx;
+  background: #fff;
+}
+
+.panel-head.compact {
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 8rpx;
+  padding: 22rpx 24rpx 18rpx;
+}
+
+.panel-note {
+  color: #7a867e;
+  font-size: 22rpx;
+  font-weight: 700;
+}
+
+.wechat-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20rpx;
+  padding: 24rpx;
+}
+
+.wechat-row {
+  display: grid;
+  grid-template-columns: 76rpx 96rpx 1fr;
+  gap: 18rpx;
+  align-items: center;
+  min-height: 96rpx;
+}
+
+.nickname-row {
+  grid-template-columns: 76rpx 1fr;
+}
+
+.form-label {
+  color: #1f2b25;
+  font-size: 26rpx;
+  font-weight: 900;
+}
+
+.form-tip {
+  min-width: 0;
+  color: #7a867e;
+  font-size: 24rpx;
+  font-weight: 700;
+}
+
+.avatar-picker {
+  width: 96rpx;
+  height: 96rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  color: #0f9f43;
+  font-size: 22rpx;
+  font-weight: 900;
+  border-radius: 18rpx;
+  background: #e9f9ed;
+  flex: none;
+}
+
+.avatar-picker image {
+  width: 100%;
+  height: 100%;
+}
+
+.nickname-input {
+  min-width: 0;
+  height: 76rpx;
+  padding: 0 18rpx;
+  color: #1f2b25;
+  font-size: 27rpx;
+  font-weight: 800;
+  border-radius: 12rpx;
+  background: #f6f8f4;
+}
+
+.save-profile-btn {
+  height: 78rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-size: 28rpx;
+  font-weight: 900;
+  border-radius: 12rpx;
+  background: #1ecb3a;
 }
 
 .order-panel {

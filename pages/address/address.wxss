@@ -1,0 +1,134 @@
+.address-page {
+  min-height: 100vh;
+  padding: 24rpx 28rpx 148rpx;
+}
+
+.address-card {
+  overflow: hidden;
+  border: 1rpx solid #e5ece7;
+  border-radius: 16rpx;
+  background: #fff;
+}
+
+.card-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24rpx;
+  padding: 28rpx 24rpx;
+  border-bottom: 1rpx solid #edf2ef;
+}
+
+.card-title {
+  color: #1f2b25;
+  font-size: 32rpx;
+  font-weight: 900;
+}
+
+.card-copy {
+  margin-top: 8rpx;
+  color: #6d7a72;
+  font-size: 24rpx;
+  line-height: 1.45;
+}
+
+.card-mark {
+  width: 58rpx;
+  height: 58rpx;
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #0f9f43;
+  font-size: 28rpx;
+  font-weight: 900;
+  border-radius: 14rpx;
+  background: #e9f9ed;
+}
+
+.form-list {
+  padding: 8rpx 24rpx 28rpx;
+}
+
+.form-row {
+  min-height: 108rpx;
+  display: grid;
+  grid-template-columns: 132rpx 1fr;
+  align-items: center;
+  gap: 18rpx;
+  border-bottom: 1rpx solid #edf2ef;
+}
+
+.form-block {
+  padding-top: 24rpx;
+}
+
+.form-label {
+  color: #1f2b25;
+  font-size: 27rpx;
+  font-weight: 900;
+}
+
+.form-input {
+  min-width: 0;
+  height: 76rpx;
+  color: #1f2b25;
+  font-size: 27rpx;
+  font-weight: 800;
+}
+
+.address-textarea {
+  width: 100%;
+  min-height: 176rpx;
+  margin-top: 18rpx;
+  padding: 20rpx;
+  color: #1f2b25;
+  font-size: 27rpx;
+  line-height: 1.5;
+  border-radius: 12rpx;
+  background: #f6f8f4;
+}
+
+.address-tip {
+  margin-top: 22rpx;
+  padding: 24rpx;
+  border: 1rpx dashed #cfe0d4;
+  border-radius: 16rpx;
+  background: #f8fbf7;
+}
+
+.tip-title {
+  color: #1f2b25;
+  font-size: 27rpx;
+  font-weight: 900;
+}
+
+.tip-copy {
+  margin-top: 10rpx;
+  color: #6d7a72;
+  font-size: 24rpx;
+  line-height: 1.6;
+}
+
+.save-bar {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 40;
+  padding: 18rpx 28rpx calc(18rpx + env(safe-area-inset-bottom));
+  background: #fff;
+  border-top: 1rpx solid #edf2ef;
+}
+
+.save-btn {
+  height: 84rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-size: 29rpx;
+  font-weight: 900;
+  border-radius: 12rpx;
+  background: #1ecb3a;
+}

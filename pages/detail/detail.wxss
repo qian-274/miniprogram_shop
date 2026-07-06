@@ -186,6 +186,12 @@
   background: linear-gradient(135deg, #ff9f1c, #ef4a45);
 }
 
+.group-avatar image {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+}
+
 .group-copy {
   min-width: 0;
 }

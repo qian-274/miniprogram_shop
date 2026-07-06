@@ -20,12 +20,18 @@
         </view>
       </view>
 
-      <view class="confirm-block">
+      <view class="confirm-block" bindtap="goAddress">
         <view class="pickup">
-          <view class="pickup-icon">电</view>
+          <view class="pickup-icon">址</view>
           <view class="pickup-copy">
-            <view class="pickup-title">{{contact.name}} {{contact.phone}}</view>
-            <view class="pickup-text">用于到货提醒和自提核验</view>
+            <view wx:if="{{address.isComplete}}">
+              <view class="pickup-title">{{address.name}} {{address.phone}}</view>
+              <view class="pickup-text">{{address.detail}}</view>
+            </view>
+            <view wx:else>
+              <view class="pickup-title missing-address">请填写我的地址</view>
+              <view class="pickup-text">联系人姓名、电话、收货地址用于下单确认</view>
+            </view>
           </view>
           <text class="chevron">›</text>
         </view>

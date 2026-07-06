@@ -1,9 +1,41 @@
 <view class="page with-tab profile-page">
   <view class="profile-head">
-    <view class="avatar">{{user.avatarText}}</view>
+    <view class="avatar">
+      <image wx:if="{{user.avatarUrl}}" class="avatar-image" src="{{user.avatarUrl}}" mode="aspectFill" />
+      <text wx:else>{{user.avatarText}}</text>
+    </view>
     <view class="profile-name">{{user.loggedIn ? user.nickName : '未登录用户'}}</view>
-    <view class="profile-desc">{{user.loggedIn ? '幸福社区 · 普通用户' : '登录后可同步购物车、收藏和订单'}}</view>
-    <view wx:if="{{!user.loggedIn}}" class="ghost-btn login-btn" bindtap="login">立即登录</view>
+    <view class="profile-desc">{{user.profileSynced ? '微信资料已同步 · 普通用户' : '同步微信头像昵称后参与拼团'}}</view>
+    <view wx:if="{{!showProfileEditor && user.loggedIn}}" class="ghost-btn login-btn" bindtap="editProfile">修改微信资料</view>
+    <view wx:if="{{!showProfileEditor && !user.loggedIn}}" class="ghost-btn login-btn" bindtap="login">微信资料登录</view>
+  </view>
+
+  <view wx:if="{{showProfileEditor}}" class="wechat-panel">
+    <view class="panel-head compact">
+      <text>微信资料登录</text>
+      <text class="panel-note">头像昵称仅用于拼团展示</text>
+    </view>
+    <view class="wechat-form">
+      <view class="wechat-row">
+        <view class="form-label">头像</view>
+        <button class="avatar-picker" open-type="chooseAvatar" bindchooseavatar="onChooseAvatar">
+          <image wx:if="{{profileForm.avatarUrl}}" src="{{profileForm.avatarUrl}}" mode="aspectFill" />
+          <text wx:else>选择</text>
+        </button>
+        <view class="form-tip">点击同步微信头像</view>
+      </view>
+      <view class="wechat-row nickname-row">
+        <view class="form-label">昵称</view>
+        <input
+          class="nickname-input"
+          type="nickname"
+          placeholder="请输入微信昵称"
+          value="{{profileForm.nickName}}"
+          bindinput="onNicknameInput"
+        />
+      </view>
+      <view class="save-profile-btn" bindtap="saveWechatProfile">保存并登录</view>
+    </view>
   </view>
 
   <view class="order-panel">
@@ -26,6 +58,11 @@
     <view class="service-row" bindtap="goFavorites">
       <view class="service-icon">♡</view>
       <text>我的收藏</text>
+      <text class="chevron">›</text>
+    </view>
+    <view class="service-row" bindtap="goAddress">
+      <view class="service-icon">址</view>
+      <text>我的地址</text>
       <text class="chevron">›</text>
     </view>
     <view class="service-row" bindtap="goService">
