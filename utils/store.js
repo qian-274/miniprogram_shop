@@ -21,6 +21,11 @@ const CLOUD_CATEGORIES_COLLECTION = 'categories'
 const CLOUD_ORDERS_COLLECTION = 'orders'
 const CLOUD_PICKUP_POINTS_COLLECTION = 'pickup_points'
 const CLOUD_PRODUCTS_COLLECTION = 'products'
+const LEGACY_DEMO_CART_ITEMS = [
+  { productId: 'grape', quantity: 2, selected: true },
+  { productId: 'orange', quantity: 1, selected: true },
+  { productId: 'eggs', quantity: 1, selected: false }
+]
 const LEGACY_DEMO_GROUP_IDS = ['GRP20260705001', 'GRP20260705002']
 const LEGACY_DEMO_ORDER_IDS = ['ORD20260705001', 'ORD20260704002', 'ORD20260703006']
 
@@ -256,14 +261,41 @@ function addHours(date, hours) {
   return new Date(date.getTime() + hours * 60 * 60 * 1000)
 }
 
+function isLegacyDemoCart(items) {
+  if (!Array.isArray(items) || items.length !== LEGACY_DEMO_CART_ITEMS.length) {
+    return false
+  }
+
+  return LEGACY_DEMO_CART_ITEMS.every((demoItem) => {
+    const item = items.find((cartItem) => cartItem && cartItem.productId === demoItem.productId)
+
+    return item
+      && Number(item.quantity) === demoItem.quantity
+      && item.selected === demoItem.selected
+  })
+}
+
+function isStoredUserLoggedIn() {
+  const user = getStorage(USER_KEY, null)
+
+  return !!(user && user.loggedIn)
+}
+
 function ensureCart() {
+  let currentCart = getStorage(CART_KEY, [])
+
+  if (!Array.isArray(currentCart)) {
+    currentCart = []
+    setStorage(CART_KEY, currentCart)
+  }
+
   if (!getStorage(CART_INIT_KEY, false)) {
-    setStorage(CART_KEY, [
-      { productId: 'grape', quantity: 2, selected: true },
-      { productId: 'orange', quantity: 1, selected: true },
-      { productId: 'eggs', quantity: 1, selected: false }
-    ])
+    setStorage(CART_KEY, currentCart)
     setStorage(CART_INIT_KEY, true)
+  }
+
+  if (!isStoredUserLoggedIn() && isLegacyDemoCart(currentCart)) {
+    setStorage(CART_KEY, [])
   }
 }
 
