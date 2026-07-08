@@ -589,6 +589,59 @@ function normalizeRemoteGroup(group, memberDocs) {
   }
 }
 
+function normalizeCloudOrder(doc = {}) {
+  const order = normalizeCloudBaseDoc(doc)
+  const pickupSnapshot = order.pickupSnapshot || {}
+
+  return {
+    ...order,
+    id: order.id || order._id,
+    status: order.status || 'pending_ship',
+    time: order.time || order.createdAt || '',
+    createdAt: order.createdAt || order.time || '',
+    pickup: order.pickup || pickupSnapshot.name || '',
+    pickupId: order.pickupId || pickupSnapshot.id || '',
+    contact: order.contact || {},
+    remark: order.remark || '',
+    isGroup: !!order.isGroup,
+    groupId: order.groupId || '',
+    groupRole: order.groupRole || '',
+    items: Array.isArray(order.items) ? order.items : []
+  }
+}
+
+function getOrderSortValue(order = {}) {
+  return order.updatedAt || order.createdAt || order.time || ''
+}
+
+function compareOrders(left, right) {
+  const leftValue = getOrderSortValue(left)
+  const rightValue = getOrderSortValue(right)
+
+  if (typeof leftValue === 'number' && typeof rightValue === 'number') {
+    return rightValue - leftValue
+  }
+
+  return String(rightValue).localeCompare(String(leftValue))
+}
+
+function mergeOrders(localOrders, remoteOrders) {
+  const orderMap = {}
+
+  ;[...filterLegacyDemoOrders(localOrders), ...filterLegacyDemoOrders(remoteOrders)].forEach((order) => {
+    if (!order || !order.id) {
+      return
+    }
+
+    orderMap[order.id] = {
+      ...(orderMap[order.id] || {}),
+      ...order
+    }
+  })
+
+  return Object.values(orderMap).sort(compareOrders)
+}
+
 function mergeGroups(localGroups, remoteGroups) {
   const groupMap = {}
 
@@ -808,6 +861,86 @@ async function syncGroupsFromCloud() {
   }
 }
 
+async function safeGetCloudOrdersByWhere(where) {
+  const db = getCloudDb()
+
+  if (!db) {
+    return []
+  }
+
+  try {
+    const result = await db
+      .collection(CLOUD_ORDERS_COLLECTION)
+      .where(where)
+      .limit(100)
+      .get()
+
+    return result.data || []
+  } catch (error) {
+    return []
+  }
+}
+
+async function fetchCloudOrdersForUser(user) {
+  const openid = user.openid || getStorage(USER_OPENID_KEY, '')
+  const userIds = [user.id, openid ? getCloudUserId(openid) : '']
+    .filter(Boolean)
+    .filter((item, index, list) => list.indexOf(item) === index)
+  const queries = []
+
+  if (openid) {
+    queries.push({ userOpenid: openid })
+    queries.push({ _openid: openid })
+  }
+
+  userIds.forEach((userId) => {
+    queries.push({ userId })
+  })
+
+  if (!queries.length) {
+    return []
+  }
+
+  const results = await Promise.all(queries.map(safeGetCloudOrdersByWhere))
+  const orderMap = {}
+
+  results.reduce((list, items) => list.concat(items), []).forEach((doc) => {
+    const order = normalizeCloudOrder(doc)
+
+    if (order.id) {
+      orderMap[order.id] = order
+    }
+  })
+
+  return Object.values(orderMap)
+}
+
+async function syncOrdersFromCloud() {
+  if (!canUseCloud()) {
+    return false
+  }
+
+  let user = getUser()
+
+  if (!user.loggedIn) {
+    return false
+  }
+
+  if (!user.openid && wx.cloud && wx.cloud.callFunction) {
+    await prepareCloudIdentity()
+    user = getUser()
+  }
+
+  const remoteOrders = await fetchCloudOrdersForUser(user)
+
+  if (!remoteOrders.length) {
+    return false
+  }
+
+  saveOrdersRaw(mergeOrders(getOrdersRaw(), remoteOrders))
+  return true
+}
+
 async function saveCloudDoc(collectionName, docId, data) {
   const db = getCloudDb()
 
@@ -872,8 +1005,9 @@ async function syncSharedData() {
     syncCatalogFromCloud(),
     syncGroupsFromCloud()
   ])
+  const ordersSynced = await syncOrdersFromCloud()
 
-  return catalogSynced || groupsSynced
+  return catalogSynced || groupsSynced || ordersSynced
 }
 
 function sanitizeOrderItemForCloud(item) {
